@@ -1,43 +1,54 @@
 <template>
-	<el-col :span="6">
-		<el-menu :default-active="activeIndex2" :router="true" @select="handleSelect"
-		         active-text-color="#ffd04b" background-color="#777777"
-		         class="el-menu-demo grid-content sidebar-el-category"
-		         text-color="#fff">
-			<!--<el-menu-item v-for="category in categoryData" :index="category.categoryId">{{category.categoryName}}</el-menu-item>-->
-			<el-menu-item class="category-item" index="1">分类1</el-menu-item>
-			<el-menu-item class="category-item" index="2">分类2</el-menu-item>
-			<el-menu-item class="category-item" index="3">分类3</el-menu-item>
-		</el-menu>
-	</el-col>
+    <div>
+        <el-tabs v-model="activeIndex" @tab-click="handleClick"
+                 :router="true">
+            <el-tab-pane label="全部" name="0"></el-tab-pane>
+            <template v-for="(category,i) in categoryData">
+                <el-tab-pane :label="category.categoryName" :name="(i+1)+''" :category="category.categoryId">
+                </el-tab-pane>
+            </template>
+        </el-tabs>
+    </div>
 </template>
 
 
 <script>
+
     export default {
         data() {
             return {
-                activeIndex: '1',
-                activeIndex2: '1',
-                isLogin: false,
-                categoryData: []
+                activeIndex: '0',
+                categoryData: [],
+                categoryId: ''
             };
         },
+        mounted() {
+            this.getCategoryList();
+        },
         methods: {
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
+            getCategoryList() {
+                this.axiosProxy.getCategoryList().then(response => {
+                    console.log(response.data);
+                    this.categoryData = response.data;
+                    console.log(this.categoryData)
+                })
+            },
+            handleClick(tab, event) {
+                this.categoryId = tab.$attrs.category;
+                console.log(tab);
+                this.$bus.emit('handleCate', this.categoryId)
             }
         }
     }
 </script>
 
 <style>
-	.sidebar-el-category {
-		margin-top: 50px;
-		width: 220px;
-	}
-	
-	.category-item {
-		margin-top: 10px;
-	}
+    .sidebar-el-category {
+        margin-top: 50px;
+        width: 220px;
+    }
+
+    .category-item {
+        margin-top: 10px;
+    }
 </style>

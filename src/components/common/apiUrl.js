@@ -10,8 +10,6 @@ export default {
     , deleteCollection: {url: blogHost + '/blog/deleteCollection'}                       //删除博客收藏
     , getBlogCommentList: {url: blogHost + '/blog/commentList'}                      //获取角色
     , deleteBlogComment: {url: blogHost + '/blog/deleteComment'}
-    , getCategoryList: {url: categoryHost + '/category/categoryList'}
-    , updateBlog: {url: blogHost + '/blog/updateBlog'}
     , deleteBlog: {url: blogHost + '/blog/deleteBlog'}
 
     , updateNews: {url: newsHost + '/news/updateNews'}
@@ -31,9 +29,11 @@ export default {
     , deleteUser: {url: userHost + '/user/deleteUser'}
     , getUserList: {url: userHost + '/user/userList'}
 
+    , getCategoryList: {url: categoryHost + '/category/categoryList'}
+    , getCategoryListByPage: {url: categoryHost + '/category/categoryListByPage'}
     , addCategory: {url: categoryHost + '/category/addCategory'}
+    , updateBlog: {url: blogHost + '/blog/updateBlog'}
     , updateCategory: {url: categoryHost + '/category/updateCategory'}
     , deleteCategory: {url: categoryHost + '/category/deleteCategory'}
-    , getCategoryListByPage: {url: categoryHost + '/category/categoryListByPage'}
     // , deleteComment: {url: blogHost + '/blog/deleteComment'}
 }

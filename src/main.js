@@ -9,7 +9,9 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './components/common/directives';
 import "babel-polyfill";
+import bus from 'vue-bus'
 
+Vue.use(bus);
 Vue.config.productionTip = false
 Vue.use(ElementUI, {
     size: 'small'

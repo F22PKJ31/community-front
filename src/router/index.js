@@ -16,6 +16,14 @@ export default new Router({
                 path: '/newsPage',
                 component: resolve => require(['../components/page/NewsPage.vue'], resolve),
                 meta: {title: '新闻推荐'}
+            },{
+                path: '/editPostPage',
+                component: resolve => require(['../components/page/EditPostPage.vue'], resolve),
+                meta: {title: '新闻详情'}
+            },{
+                path: '/demo',
+                component: resolve => require(['../components/page/Demo.vue'], resolve),
+                meta: {title: '样例'}
             }
             ]
         }
