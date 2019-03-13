@@ -1,34 +1,92 @@
 <template>
-    <div>
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 表单</el-breadcrumb-item>
-                <el-breadcrumb-item>编辑器</el-breadcrumb-item>
-            </el-breadcrumb>
-        </div>
-        <div class="container">
-            <div class="plugins-tips">
-                Vue-Quill-Editor：基于Quill、适用于Vue2的富文本编辑器。
-                访问地址：<a href="https://github.com/surmon-china/vue-quill-editor" target="_blank">vue-quill-editor</a>
-            </div>
-            <quill-editor ref="myTextEditor" v-model="content" :options="editorOption"></quill-editor>
-            <el-button class="editor-btn" type="primary" @click="submit">提交</el-button>
-        </div>
-    </div>
+	<div>
+		<div class="crumbs">
+			<el-breadcrumb separator="/">
+				<el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 表单</el-breadcrumb-item>
+				<el-breadcrumb-item>编辑器</el-breadcrumb-item>
+			</el-breadcrumb>
+		</div>
+		<div class="container">
+			<div class="plugins-tips">
+				Vue-Quill-Editor：基于Quill、适用于Vue2的富文本编辑器。
+				访问地址：<a href="https://github.com/surmon-china/vue-quill-editor" target="_blank">vue-quill-editor</a>
+			</div>
+			<quill-editor :options="editorOption" ref="myTextEditor" v-model="content"></quill-editor>
+			<el-button @click="submit" class="editor-btn" type="primary">提交</el-button>
+		</div>
+		
+		<!-- 视频上传 -->
+		<div class="floatBox" v-show='upvideoShow'>
+			<div class="floatsmBox">
+				<b-form-file accept="video/*" placeholder="选择视频文件" ref="videofilereset"
+				             v-model="videofile"></b-form-file>
+				<span @click='upVideo' class="btn btn-outline-success" style="margin-top: 10px;">确认</span>
+				<span @click='cancelupVideo' class="btn btn-outline-success" style="margin-top: 10px;">取消</span>
+			</div>
+		</div>
+		<!-- 图片上传 -->
+		<div class="floatBox" v-show='upimgShow'>
+			<div class="floatsmBox">
+				<b-form-file accept="image/*" placeholder="选择图片文件" ref="imgfilereset" v-model="imgfile"></b-form-file>
+				<span @click='upImg' class="btn btn-outline-success" style="margin-top: 10px;">确认</span>
+				<span @click='cancelupImg' class="btn btn-outline-success" style="margin-top: 10px;">取消</span>
+			</div>
+		</div>
+		<div @click='upvideoShow=true' id="upvideoshow" style="display: none;"></div>
+		<div @click='upimgShow=true' id="upimgshow" style="display: none;"></div>
+		<div class='floatBox ub ub_ac ub_pc' v-if='showFloat'>
+			<b-progress :max="100" :value="jindu" animated class='ub_f1 proessBox' show-progress></b-progress>
+		</div>
+	</div>
 </template>
 
 <script>
     import 'quill/dist/quill.core.css';
     import 'quill/dist/quill.snow.css';
     import 'quill/dist/quill.bubble.css';
-    import { quillEditor } from 'vue-quill-editor';
+    import {Quill, quillEditor} from 'vue-quill-editor'
+
     export default {
         name: 'editor',
-        data: function(){
+        data() {
             return {
-                content: '',
+                showFloat: false,//控制上传进度展示浮层
+                jindu: 0,//上传进度
+                upvideoShow: false,//控制上传视频展示
+                upimgShow: false,//控制上传图片展示
+                videofile: '',
+                imgfile: '',
+                content: '',//编辑器内容
+                editorVal: '',
                 editorOption: {
-                    placeholder: 'Hello World'
+                    modules: {
+                        toolbar: {
+                            container: [
+                                ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
+                                ["blockquote", "code-block"], // 引用  代码块
+                                [{header: 1}, {header: 2}], // 1、2 级标题
+                                [{list: "ordered"}, {list: "bullet"}], // 有序、无序列表
+                                [{indent: "-1"}, {indent: "+1"}], // 缩进
+                                [{size: ["small", false, "large", "huge"]}], // 字体大小
+                                [{header: [1, 2, 3, 4, 5, 6, false]}], // 标题
+                                ["clean"], // 清除文本格式
+                                ["link", "image", "video"] // 链接、图片、视频
+                            ],
+                            handlers: {
+                                'image': function () {  // 劫持原来的图片点击按钮事件
+                                    document.querySelector('#upimgshow').click()
+                                },
+                                'video': function (val) {
+                                    document.querySelector('#upvideoshow').click()
+                                }
+                            }
+                        }, //工具菜单栏配置
+
+                    },
+                    placeholder: '请在这里添加产品描述', //提示
+                    readyOnly: false, //是否只读
+                    theme: 'snow', //主题 snow/bubble
+                    syntax: true, //语法检测
                 }
             }
         },
@@ -36,24 +94,244 @@
             quillEditor
         },
         methods: {
-            onEditorChange({ editor, html, text }) {
-                this.content = html;
-            },
-            submit(){
+            submit() {
                 console.log(this.content);
-                this.$message.success('提交成功！');
+                //提交
+            },
+            cancelupImg() {//取消上传图片 关闭浮层并清除文件
+                this.$refs.imgfilereset.reset();
+                this.upimgShow = false
+            },
+            cancelupVideo() {//取消上传视频 关闭浮层并清除文件
+                this.$refs.videofilereset.reset();
+                this.upvideoShow = false
+            },
+            upImg() {//上传图片
+                var that = this
+                if (that.imgfile === undefined || that.imgfile == null) {
+                    alert('请选择图片')
+                }
+                that.jindu = 0
+                that.showFloat = true
+                //随机9位数名称(由于此项目文件是上传到阿里云的oss上面的，所以同一天的同名文件会覆盖，按需添加)
+                var a = that.imgfile.name
+                let param = new FormData(); //创建form对象
+                param.append('file', that.imgfile, that.imgfile.name);//视频
+                let config = {
+                    onUploadProgress: progressEvent => {
+                        var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+                        // console.log('进度值',complete)
+                        that.jindu = complete
+                    },
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+                this.$axios.post('http://127.0.0.1:8010/file/uploadFile', param, config)//url为上传地址
+                    .then(response => {
+                        that.$refs.imgfilereset.reset();//清除文件
+                        console.log(response.data);
+                        if (response.data.error === '0') {
+                            // 获取光标所在位置
+                            let quill = that.$refs.myTextEditor.quill;
+                            let length = quill.getSelection().index;
+                            // 插入图片  response.data.url为服务器返回的图片地址
+                            quill.insertEmbed(length, 'image', response.data.url)
+                            // 调整光标到最后
+                            quill.setSelection(length + 1)
+                            that.showFloat = false
+                            that.upimgShow = false
+                        } else {
+                            that.showFloat = false
+                            that.upimgShow = false
+                            alert('插入失败,请重试')
+                        }
+                    }).catch(function (error) {
+                    alert(error)
+                    that.showFloat = false
+                    that.upimgShow = false
+                })
+            },
+            upVideo() {//上传视频
+                var that = this
+                if (that.imgfile === undefined || that.videofile == null) {
+                    alert('请选择视频')
+                }
+                that.jindu = 0
+                that.showFloat = true
+                var a = that.videofile.name
+                var eame = a.split('.')
+                var rnd = "";
+                for (var i = 0; i < 9; i++) {
+                    rnd += Math.floor(Math.random() * 10);
+                }
+                let param = new FormData(); //创建form对象
+                param.append('video', that.videofile, rnd + '.' + eame[eame.length - 1]);//视频
+                let config = {
+                    onUploadProgress: progressEvent => {
+                        var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+                        that.jindu = complete
+                    },
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+                this.$axios.post('http://127.0.0.1:8010/file/uploadFile', param, config)//url为上传地址
+                    .then(response => {
+                        that.$refs.videofilereset.reset();//清除文件
+                        if (response.data.error === '0') {
+                            // 获取光标所在位置
+                            let quill = that.$refs.myQuillEditor.quill
+                            let length = quill.getSelection().index;
+                            // 插入视频  response.data.url为服务器返回的图片地址
+                            quill.insertEmbed(length, 'video', response.data.url)
+                            // 调整光标到最后
+                            quill.setSelection(length + 1)
+                            that.showFloat = false
+                            that.upvideoShow = false
+                        } else {
+                            that.showFloat = false
+                            that.upvideoShow = false
+                            alert('插入失败,请重试')
+                        }
+                    }).catch(function (error) {
+                    alert('插入失败,请重试')
+                    that.showFloat = false
+                    that.upvideoShow = false
+                })
             }
+        },
+        computed: {
+            editor() {
+                return this.$refs.myTextEditor.quillEditor;
+            }
+        },
+        mounted() {
+            // console.log('this is my editor',this.editor);
         }
     }
 </script>
-<style scoped>
-    .editor-btn{
-        margin-top: 20px;
-    }
 
-    .plugins-tips {
-        padding: 20px 10px;
-        margin-bottom: 20px;
-        background: #eef1f6;
-    }
+
+<style>
+	.editor-btn {
+		margin-top: 20px;
+	}
+	
+	.plugins-tips {
+		padding: 20px 10px;
+		margin-bottom: 20px;
+		background: #eef1f6;
+	}
+	
+	.proessBox {
+		max-width: 400px;
+	}
+	
+	.testFweb_box .custom-file-label::after {
+		content: "选择视频文件";
+		display: none;
+	}
+	
+	.floatsmBox {
+		padding: 20px;
+		background-color: #fff;
+		margin-top: 5%;
+	}
+	
+	.floatBox {
+		position: fixed;
+		top: 0;
+		left: 0;
+		background-color: rgba(0, 0, 0, 0.2);
+		width: 100%;
+		height: 100%;
+		padding: 0 10%;
+		z-index: 10;
+	}
+	
+	
+	.ql-snow .ql-tooltip[data-mode=link]::before {
+		content: "请输入链接地址:";
+	}
+	
+	.ql-snow .ql-tooltip.ql-editing a.ql-action::after {
+		border-right: 0px;
+		content: '保存';
+		padding-right: 0px;
+	}
+	
+	.ql-snow .ql-tooltip[data-mode=video]::before {
+		content: "请输入视频地址:";
+	}
+	
+	.ql-snow .ql-picker.ql-size .ql-picker-label::before,
+	.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+		content: '14px';
+	}
+	
+	.ql-snow .ql-picker.ql-size .ql-picker-label[data-value=small]::before,
+	.ql-snow .ql-picker.ql-size .ql-picker-item[data-value=small]::before {
+		content: '10px';
+	}
+	
+	.ql-snow .ql-picker.ql-size .ql-picker-label[data-value=large]::before,
+	.ql-snow .ql-picker.ql-size .ql-picker-item[data-value=large]::before {
+		content: '18px';
+	}
+	
+	.ql-snow .ql-picker.ql-size .ql-picker-label[data-value=huge]::before,
+	.ql-snow .ql-picker.ql-size .ql-picker-item[data-value=huge]::before {
+		content: '32px';
+	}
+	
+	.ql-snow .ql-picker.ql-header .ql-picker-label::before,
+	.ql-snow .ql-picker.ql-header .ql-picker-item::before {
+		content: '文本';
+	}
+	
+	.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+	.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+		content: '标题1';
+	}
+	
+	.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+	.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+		content: '标题2';
+	}
+	
+	.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+	.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+		content: '标题3';
+	}
+	
+	.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
+	.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
+		content: '标题4';
+	}
+	
+	.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="5"]::before,
+	.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="5"]::before {
+		content: '标题5';
+	}
+	
+	.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="6"]::before,
+	.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="6"]::before {
+		content: '标题6';
+	}
+	
+	.ql-snow .ql-picker.ql-font .ql-picker-label::before,
+	.ql-snow .ql-picker.ql-font .ql-picker-item::before {
+		content: '标准字体';
+	}
+	
+	.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=serif]::before,
+	.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=serif]::before {
+		content: '衬线字体';
+	}
+	
+	.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=monospace]::before,
+	.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=monospace]::before {
+		content: '等宽字体';
+	}
 </style>
