@@ -54,13 +54,7 @@
 		height: 50px;
 		position: relative;
 	}
-	
-	.avatar {
-		width: 48px;
-		height: 48px;
-		float: left;
-	}
-	
+
 	.news-title {
 		width: 90%;
 		padding-left: 10px;
@@ -93,14 +87,8 @@
 		padding-right: 20px;
 		float: right;
 	}
-	
-	.node-name {
-		margin-top: 4px;
-		margin-left: 10px;
-	}
-</style>
 
-<style>
+
 	.news .el-card__body {
 		padding: 0;
 	}

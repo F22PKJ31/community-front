@@ -1,15 +1,8 @@
 <template>
 	<div>
-		<div class="crumbs">
-			<el-breadcrumb separator="/">
-				<el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 表单</el-breadcrumb-item>
-				<el-breadcrumb-item>编辑器</el-breadcrumb-item>
-			</el-breadcrumb>
-		</div>
 		<div class="container">
 			<div class="plugins-tips">
-				Vue-Quill-Editor：基于Quill、适用于Vue2的富文本编辑器。
-				访问地址：<a href="https://github.com/surmon-china/vue-quill-editor" target="_blank">vue-quill-editor</a>
+				内容编辑
 			</div>
 			<quill-editor :options="editorOption" ref="myTextEditor" v-model="content"></quill-editor>
 			<el-button @click="submit" class="editor-btn" type="primary">提交</el-button>
@@ -114,7 +107,6 @@
                 that.jindu = 0
                 that.showFloat = true
                 //随机9位数名称(由于此项目文件是上传到阿里云的oss上面的，所以同一天的同名文件会覆盖，按需添加)
-                var a = that.imgfile.name
                 let param = new FormData(); //创建form对象
                 param.append('file', that.imgfile, that.imgfile.name);//视频
                 let config = {
@@ -159,14 +151,8 @@
                 }
                 that.jindu = 0
                 that.showFloat = true
-                var a = that.videofile.name
-                var eame = a.split('.')
-                var rnd = "";
-                for (var i = 0; i < 9; i++) {
-                    rnd += Math.floor(Math.random() * 10);
-                }
                 let param = new FormData(); //创建form对象
-                param.append('video', that.videofile, rnd + '.' + eame[eame.length - 1]);//视频
+                param.append('file', that.videofile, that.videofile.name);//视频
                 let config = {
                     onUploadProgress: progressEvent => {
                         var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
@@ -181,7 +167,7 @@
                         that.$refs.videofilereset.reset();//清除文件
                         if (response.data.error === '0') {
                             // 获取光标所在位置
-                            let quill = that.$refs.myQuillEditor.quill
+                            let quill = that.$refs.myTextEditor.quill
                             let length = quill.getSelection().index;
                             // 插入视频  response.data.url为服务器返回的图片地址
                             quill.insertEmbed(length, 'video', response.data.url)

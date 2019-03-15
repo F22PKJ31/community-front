@@ -1,13 +1,12 @@
 <template>
-        <el-container>
-            <el-header>
-                <v-category></v-category>
-            </el-header>
-            <el-main class="main" v-loading="loading">
-                <ul>
-                    <v-news :key="newsData.id" :newsData="newsData" v-for=" newsData in news"></v-news>
-                </ul>
-            </el-main>
+    <el-container>
+        <el-header>
+            <h3>{{news.title}}</h3>
+        </el-header>
+        <a class="author" v-bind:href="news.userId">{{ news.userName }}</a>
+        <el-main class="main" v-loading="loading">
+            {{news.content}}
+        </el-main>
     </el-container>
 </template>
 
@@ -28,7 +27,12 @@
         data() {
             return {
                 msg: '主页',
-                news: [],
+                news: {
+                    title: '',
+                    content: '',
+                    userId: '',
+                    userName: ''
+                },
                 loading: true
             }
         },
@@ -44,7 +48,7 @@
                         categoryId: this.categoryId
                     }
                 }
-                this.axiosProxy.getNewsList(params).then(response =>{
+                this.axiosProxy.getNewsList(params).then(response => {
                     this.news = response.data.records;
                     this.loading = false;
                 })
@@ -73,9 +77,10 @@
         text-decoration: none;
     }
 
-    .category {
-        width: 1000px;
-        margin: 20px auto;
+    .author {
+        padding-right: 20px;
+        color: gray;
+        float: right;
     }
 
 

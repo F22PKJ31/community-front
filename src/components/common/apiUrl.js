@@ -28,6 +28,7 @@ export default {
     , updateUser: {url: userHost + '/user/updateUser'}
     , deleteUser: {url: userHost + '/user/deleteUser'}
     , getUserList: {url: userHost + '/user/userList'}
+    , getUserByName: {url: userHost + '/user/getUserByName'}
 
     , getCategoryList: {url: categoryHost + '/category/categoryList'}
     , getCategoryListByPage: {url: categoryHost + '/category/categoryListByPage'}
