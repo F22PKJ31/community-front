@@ -1,80 +1,82 @@
 <template>
-    <div>
-        <el-menu :default-active="activeIndex" :router="true" @select="handleSelect"
-                 active-text-color="#ffd04b" background-color="#545c64" class="el-menu-demo" mode="horizontal"
-                 text-color="#fff">
-            <el-menu-item disabled>IT技术视频分享交流社区</el-menu-item>
-            <el-menu-item index="newsPage">新闻推荐</el-menu-item>
-            <el-menu-item index="blogPage">博客中心</el-menu-item>
-            <el-menu-item index="communityPage">社区中心</el-menu-item>
-            <el-menu-item index="editPostPage">编辑器</el-menu-item>
-            <el-menu-item index="demo">编辑器</el-menu-item>
-            <el-submenu v-if="isLogin" style="float: right;">
-                <template slot="title">{{userName}}</template>
-                <el-menu-item index="minePage">个人中心</el-menu-item>
-                <el-menu-item index="collectionsPage">我的收藏</el-menu-item>
-                <el-menu-item index="commentsPage">我的评论</el-menu-item>
-                <el-menu-item @click="exit">退出</el-menu-item>
-            </el-submenu>
-            <el-menu-item style="float: right;" v-if="!isLogin" @click="registerVisible = true;errorVisible2=false;">
-                注册
-            </el-menu-item>
-            <el-menu-item style="float: right;" v-if="!isLogin" @click="loginVisible = true;errorVisible = false">登录
-            </el-menu-item>
-        </el-menu>
-
-        <!-- 登录 -->
-        <el-dialog :visible.sync="loginVisible" title="登录" width="30%">
-            <el-alert v-if="errorVisible" title="用户名密码错误" type="error">
-            </el-alert>
-            <el-form :model="form" label-width="60px" ref="form">
-                <el-form-item label="用户名">
-                    <el-input v-model="form.userName"></el-input>
-                </el-form-item>
-                <el-form-item label="密码">
-                    <el-input type="password" v-model="form.passwd" show-password></el-input>
-                </el-form-item>
-            </el-form>
-            <span class="dialog-footer" slot="footer">
+	<div>
+		<el-menu :default-active="activeIndex" :router="true" @select="handleSelect"
+		         active-text-color="#ffd04b" background-color="#545c64" class="el-menu-demo" mode="horizontal"
+		         text-color="#fff">
+			<el-menu-item disabled>IT技术视频分享交流社区</el-menu-item>
+			<el-menu-item index="/homePage">首页</el-menu-item>
+			<el-menu-item index="/newsPage">新闻推荐</el-menu-item>
+			<el-menu-item index="/blogPage">博客中心</el-menu-item>
+			<el-menu-item index="/postPage">社区中心</el-menu-item>
+			<el-menu-item index="/editPostPage">编辑器</el-menu-item>
+			<el-menu-item index="/demo">编辑器</el-menu-item>
+			<el-submenu index="" style="float: right;" v-if="isLogin">
+				<template slot="title">{{userName}}</template>
+				<el-menu-item index="/minePage">个人中心</el-menu-item>
+				<br>
+				<el-menu-item index="/myBlogPage">我的博客</el-menu-item>
+				<br>
+				<el-menu-item @click="exit">退出</el-menu-item>
+			</el-submenu>
+			<el-menu-item @click="registerVisible = true;errorVisible2=false;" style="float: right;" v-if="!isLogin">
+				注册
+			</el-menu-item>
+			<el-menu-item @click="loginVisible = true;errorVisible = false" style="float: right;" v-if="!isLogin">登录
+			</el-menu-item>
+		</el-menu>
+		
+		<!-- 登录 -->
+		<el-dialog :visible.sync="loginVisible" title="登录" width="30%">
+			<el-alert title="用户名密码错误" type="error" v-if="errorVisible">
+			</el-alert>
+			<el-form :model="form" label-width="60px" ref="form">
+				<el-form-item label="用户名">
+					<el-input v-model="form.userName"></el-input>
+				</el-form-item>
+				<el-form-item label="密码">
+					<el-input show-password type="password" v-model="form.passwd"></el-input>
+				</el-form-item>
+			</el-form>
+			<span class="dialog-footer" slot="footer">
                 <el-button @click="loginVisible = false;errorVisible = false;">取 消</el-button>
                 <el-button @click="login" type="primary">确 定</el-button>
             </span>
-        </el-dialog>
-
-        <!-- 注册 -->
-        <el-dialog :visible.sync="registerVisible" title="注册" width="30%">
-            <el-alert v-if="errorVisible2" :title="title" type="error">
-            </el-alert>
-            <el-form :model="form" label-width="90px" ref="form" :rules="rules">
-                <el-form-item label="用户名" prop="userName">
-                    <el-input v-model="form.userName" required></el-input>
-                </el-form-item>
-                <el-form-item label="密码" prop="passwd">
-                    <el-input type="password" v-model="form.passwd" show-password></el-input>
-                </el-form-item>
-                <el-form-item label="确认密码" prop="passwd2">
-                    <el-input type="password" v-model="form.passwd2" show-password></el-input>
-                </el-form-item>
-                <el-form-item label="年龄" prop="age">
-                    <el-input max="100" min="0" type="number" v-model="form.age"></el-input>
-                </el-form-item>
-                <el-form-item label="性别" prop="sex">
-                    <el-radio v-model="form.sex" label="男">男</el-radio>
-                    <el-radio v-model="form.sex" label="女">女</el-radio>
-                </el-form-item>
-                <el-form-item label="手机号" prop="mobile">
-                    <el-input maxlength="11" minlength="11" v-model="form.mobile"></el-input>
-                </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                    <el-input type="email" v-model="form.email"></el-input>
-                </el-form-item>
-            </el-form>
-            <span class="dialog-footer" slot="footer">
+		</el-dialog>
+		
+		<!-- 注册 -->
+		<el-dialog :visible.sync="registerVisible" title="注册" width="30%">
+			<el-alert :title="title" type="error" v-if="errorVisible2">
+			</el-alert>
+			<el-form :model="form" :rules="rules" label-width="90px" ref="form">
+				<el-form-item label="用户名" prop="userName">
+					<el-input required v-model="form.userName"></el-input>
+				</el-form-item>
+				<el-form-item label="密码" prop="passwd">
+					<el-input show-password type="password" v-model="form.passwd"></el-input>
+				</el-form-item>
+				<el-form-item label="确认密码" prop="passwd2">
+					<el-input show-password type="password" v-model="form.passwd2"></el-input>
+				</el-form-item>
+				<el-form-item label="年龄" prop="age">
+					<el-input max="100" min="0" type="number" v-model="form.age"></el-input>
+				</el-form-item>
+				<el-form-item label="性别" prop="sex">
+					<el-radio label="男" v-model="form.sex">男</el-radio>
+					<el-radio label="女" v-model="form.sex">女</el-radio>
+				</el-form-item>
+				<el-form-item label="手机号" prop="mobile">
+					<el-input maxlength="11" minlength="11" v-model="form.mobile"></el-input>
+				</el-form-item>
+				<el-form-item label="邮箱" prop="email">
+					<el-input type="email" v-model="form.email"></el-input>
+				</el-form-item>
+			</el-form>
+			<span class="dialog-footer" slot="footer">
                 <el-button @click="registerVisible = false;errorVisible2 = false;">取 消</el-button>
                 <el-button @click="register" type="primary">确 定</el-button>
             </span>
-        </el-dialog>
-    </div>
+		</el-dialog>
+	</div>
 </template>
 
 
@@ -143,6 +145,7 @@
                         this.loginVisible = false;
                         this.userId = response.data.userId;
                         this.userName = response.data.userName;
+                        location.reload()
                     } else {
                         this.errorVisible = true;
                     }
@@ -154,6 +157,7 @@
                 this.isLogin = false;
                 this.userId = '';
                 this.userName = '';
+                location.reload();
             },
             register() {
                 if (this.form.userName.length === 0) {

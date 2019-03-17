@@ -1,10 +1,10 @@
 <template>
-	<el-card class="news" shadow="hover">
+	<el-card class="blog" shadow="hover">
 		<div class="clearfix" slot="header">
 			<div class="container">
-				<div class="news-prview">
-					<a @click="handlePostDetail" class="news-title">{{ newsData.title }}</a><br>
-					<a class="author" v-bind:href="newsData.userId">{{ newsData.userName }}</a>
+				<div class="blog-prview">
+					<a @click="handlePostDetail" class="blog-title">{{ blogData.title }}</a><br>
+					<a class="author" v-bind:href="blogData.userId">{{ blogData.userName }}</a>
 					<el-badge :max="999" :value="commentNum" class="replies-num">
 						<el-button>评论</el-button>
 					</el-badge>
@@ -12,16 +12,16 @@
 			</div>
 		</div>
 		<div class="content clearfix">
-			<el-tag style="float: left;">{{newsData.createTime}}</el-tag>
-			<el-button @click="handlePostDetail" class="news-detail" style="float: right;" type="text">查看详情</el-button>
+			<el-tag style="float: left;">{{blogData.createTime}}</el-tag>
+			<el-button @click="handlePostDetail" class="blog-detail" style="float: right;" type="text">查看博客</el-button>
 		</div>
 	</el-card>
 </template>
 
 <script>
     export default {
-        name: 'news',
-        props: ['newsData'],
+        name: 'blog',
+        props: ['blogData'],
         data() {
             return {
                 commentNum: 0
@@ -29,18 +29,16 @@
         },
         created() {
             this.getCommentNum();
-            console.log(this.newsData.newsId)
         },
         methods: {
             handlePostDetail() {
-                this.$router.push({name: 'newsDetail', query: {'newsId': this.newsData.newsId}})
+                this.$router.push({name: 'blogDetail', query: {'blogId': this.blogData.blogId}})
             },
             getCommentNum() {
                 let params = {
-                    id: this.newsData.newsId
+                    id: this.blogData.blogId
                 }
-                this.axiosProxy.countNewsComment(params).then(response => {
-                    console.log(response)
+                this.axiosProxy.countBlogComment(params).then(response => {
                     this.commentNum = response.data;
                 })
             }
@@ -54,18 +52,18 @@
 		text-decoration: none;
 	}
 	
-	.news {
+	.blog {
 		width: 1000px;
 		height: auto;
 		margin: 0 auto 8px;
 	}
 	
-	.news-prview {
+	.blog-prview {
 		height: 50px;
 		position: relative;
 	}
 	
-	.news-title {
+	.blog-title {
 		width: 90%;
 		padding-left: 10px;
 		color: #1a1a1a;
@@ -91,13 +89,13 @@
 		float: right;
 	}
 	
-	.news-detail {
+	.blog-detail {
 		padding-right: 20px;
 		float: right;
 	}
 	
 	
-	.news .el-card__body {
+	.blog .el-card__body {
 		padding: 0;
 	}
 </style>

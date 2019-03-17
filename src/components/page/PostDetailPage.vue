@@ -1,18 +1,18 @@
 <template>
 	<el-container style="margin: 30px 60px">
 		<el-header>
-			<h2>{{news.title}}</h2>
+			<h2>{{post.title}}</h2>
 			<div style="text-align: right">
-				<a class="author" v-bind:href="news.userId">{{ news.userName }}</a>
+				<a class="author" v-bind:href="post.userId">{{ post.userName }}</a>
 				发表于
-				{{news.createTime}}
+				{{post.createTime}}
 			</div>
 		</el-header>
 		<el-main>
-			<div class="content" v-html="news.content"></div>
+			<div class="content" v-html="post.content"></div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId!=null">
 				<el-input type="textarea" v-model="newComment"></el-input>
-				<el-button @click="sendNewsComment" style="margin: 10px 0" type="primary">评论</el-button>
+				<el-button @click="sendPostComment" style="margin: 10px 0" type="primary">评论</el-button>
 			</div>
 			<div style="text-align: right" v-show="userId==null">
 				<el-button style="margin: 10px 0" type="danger ">请登录</el-button>
@@ -44,15 +44,15 @@
                 pages: 0,
                 commentList: '',
                 newComment: '',
-                news: '',
+                post: '',
                 userId: localStorage.getItem('userId'),
                 loading: true
             }
         },
         created() {
-            this.axiosProxy.getNewsById({'id': this.$route.query.newsId}).then(response => {
-                this.news = response.data;
-                this.getNewsCommentList();
+            this.axiosProxy.getPostById({'id': this.$route.query.postId}).then(response => {
+                this.post = response.data;
+                this.getPostCommentList();
             });
         },
         computed() {
@@ -61,24 +61,26 @@
         methods: {
             handleCurrentChange(val) {
                 this.current = val;
-                this.getNewsCommentList();
+                this.getPostCommentList();
             },
-            getNewsCommentList() {
+            getPostCommentList() {
+                console.log(this.post.postId)
                 let params = {
                     current: this.current,
                     size: this.size,
                     t: {
-                        newsId: this.news.newsId
+                        postId: this.post.postId
                     }
                 };
-                this.axiosProxy.getNewsCommentList(params).then(response => {
+                this.axiosProxy.getPostCommentList(params).then(response => {
+                    console.log(response.data.records)
                     this.commentList = response.data.records;
                     this.total = response.data.total;
                     this.pages = response.data.pages;
                     this.loading = false;
                 })
             },
-            sendNewsComment() {
+            sendPostComment() {
                 if (this.newComment.length <= 0) {
                     this.$message("评论不能为空")
                     return;
@@ -87,13 +89,13 @@
                     content: this.newComment,
                     userId: localStorage.getItem("userId"),
                     userName: localStorage.getItem("userName"),
-                    newsId: this.news.newsId,
-                    newsName: this.news.newsName
+                    postId: this.post.postId,
+                    postName: this.post.postName
                 }
-                this.axiosProxy.sendNewsComment(params).then(response => {
+                this.axiosProxy.sendPostComment(params).then(response => {
                     if (response.data) {
                         this.$message('评论成功');
-                        this.getNewsCommentList();
+                        this.getPostCommentList();
                         this.newComment = '';
                     } else {
                         this.$message('评论失败');

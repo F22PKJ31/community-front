@@ -1,10 +1,17 @@
 <template>
 	<el-container>
 		<el-header>
-			<v-category></v-category>
+			<div style="text-align: right;margin:20px 120px">
+				<router-link to="/editPostPage">
+					<el-button type="primary">撰写博客</el-button>
+				</router-link>
+			</div>
 		</el-header>
 		<el-main class="main" v-loading="loading">
-			<v-news :newsData="newsData" v-for=" newsData in news"></v-news>
+			<ul>
+				<v-blog :blogData="blogData" :commentNum="commentNum" :key="blogData.id"
+				        v-for=" blogData in blog"></v-blog>
+			</ul>
 		</el-main>
 		<el-footer>
 			<el-pagination :current-page="current" :page-size="size" :total="total"
@@ -17,24 +24,24 @@
 </template>
 
 <script>
-    import vCategory from '../common/Category.vue'
-    import vNews from '../common/News.vue'
+    import vBlog from '../common/Blog.vue'
 
     export default {
         components: {
-            vCategory, vNews
+            vBlog
         },
         mounted() {
             this.$bus.on('handleCate', (e) => {
                 this.categoryId = e;
                 this.current = 0;
-                this.getNewsList();
+                this.getBlogList();
             })
         },
         data() {
             return {
+                commentNum: 0,
                 categoryId: '',
-                news: [],
+                blog: [],
                 size: 8,
                 current: 0,
                 total: 0,
@@ -43,24 +50,22 @@
             }
         },
         created() {
-            this.getNewsList()
+            this.getBlogList()
         },
         methods: {
             handleCurrentChange(val) {
                 this.current = val;
-                this.getNewsList();
+                this.getBlogList();
             },
-            getNewsList() {
+            getBlogList() {
                 this.loading = true;
                 let params = {
                     current: this.current,
                     size: this.size,
-                    t: {
-                        categoryId: this.categoryId
-                    }
+                    t: {}
                 }
-                this.axiosProxy.getNewsList(params).then(response => {
-                    this.news = response.data.records;
+                this.axiosProxy.getBlogList(params).then(response => {
+                    this.blog = response.data.records;
                     this.total = response.data.total;
                     this.pages = response.data.pages;
                     this.loading = false;
@@ -88,11 +93,6 @@
 	a {
 		color: inherit;
 		text-decoration: none;
-	}
-	
-	.pagination {
-		margin: 20px 0;
-		text-align: right;
 	}
 
 </style>

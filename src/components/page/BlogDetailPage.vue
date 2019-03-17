@@ -1,18 +1,19 @@
 <template>
 	<el-container style="margin: 30px 60px">
 		<el-header>
-			<h2>{{news.title}}</h2>
+			<el-button style="margin: 10px 0;float: right" type="primary" v-if="blog.userId==this.userId">编辑</el-button>
+			<h2>{{blog.title}}</h2>
 			<div style="text-align: right">
-				<a class="author" v-bind:href="news.userId">{{ news.userName }}</a>
+				<a class="author" v-bind:href="blog.userId">{{ blog.userName }}</a>
 				发表于
-				{{news.createTime}}
+				{{blog.createTime}}
 			</div>
 		</el-header>
 		<el-main>
-			<div class="content" v-html="news.content"></div>
+			<div class="content" v-html="blog.content"></div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId!=null">
 				<el-input type="textarea" v-model="newComment"></el-input>
-				<el-button @click="sendNewsComment" style="margin: 10px 0" type="primary">评论</el-button>
+				<el-button @click="sendBlogComment" style="margin: 10px 0" type="primary">评论</el-button>
 			</div>
 			<div style="text-align: right" v-show="userId==null">
 				<el-button style="margin: 10px 0" type="danger ">请登录</el-button>
@@ -33,6 +34,7 @@
     import vComment from '../common/Comment.vue'
 
     export default {
+        name: 'blogDetail',
         components: {
             vComment
         },
@@ -44,15 +46,15 @@
                 pages: 0,
                 commentList: '',
                 newComment: '',
-                news: '',
+                blog: '',
                 userId: localStorage.getItem('userId'),
                 loading: true
             }
         },
         created() {
-            this.axiosProxy.getNewsById({'id': this.$route.query.newsId}).then(response => {
-                this.news = response.data;
-                this.getNewsCommentList();
+            this.axiosProxy.getBlogById({'id': this.$route.query.blogId}).then(response => {
+                this.blog = response.data;
+                this.getBlogCommentList();
             });
         },
         computed() {
@@ -61,24 +63,24 @@
         methods: {
             handleCurrentChange(val) {
                 this.current = val;
-                this.getNewsCommentList();
+                this.getBlogCommentList();
             },
-            getNewsCommentList() {
+            getBlogCommentList() {
                 let params = {
                     current: this.current,
                     size: this.size,
                     t: {
-                        newsId: this.news.newsId
+                        blogId: this.blog.blogId
                     }
                 };
-                this.axiosProxy.getNewsCommentList(params).then(response => {
+                this.axiosProxy.getBlogCommentList(params).then(response => {
                     this.commentList = response.data.records;
                     this.total = response.data.total;
                     this.pages = response.data.pages;
                     this.loading = false;
                 })
             },
-            sendNewsComment() {
+            sendBlogComment() {
                 if (this.newComment.length <= 0) {
                     this.$message("评论不能为空")
                     return;
@@ -87,17 +89,18 @@
                     content: this.newComment,
                     userId: localStorage.getItem("userId"),
                     userName: localStorage.getItem("userName"),
-                    newsId: this.news.newsId,
-                    newsName: this.news.newsName
+                    blogId: this.blog.blogId,
+                    blogName: this.blog.blogName
                 }
-                this.axiosProxy.sendNewsComment(params).then(response => {
+                this.axiosProxy.sendBlogComment(params).then(response => {
                     if (response.data) {
                         this.$message('评论成功');
-                        this.getNewsCommentList();
+                        this.getBlogCommentList();
                         this.newComment = '';
                     } else {
                         this.$message('评论失败');
                     }
+
                 })
             }
         }

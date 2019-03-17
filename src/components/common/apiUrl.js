@@ -6,23 +6,36 @@ var categoryHost = 'http://127.0.0.1:8015';
 
 export default {
     getBlogList: {url: blogHost + '/blog/blogList'}    //获取博客列表
-    , getBlogCollectionList: {url: blogHost + '/blog/collectionList'}        //获取博客收藏列表
-    , deleteCollection: {url: blogHost + '/blog/deleteCollection'}                       //删除博客收藏
-    , getBlogCommentList: {url: blogHost + '/blog/commentList'}                      //获取角色
+    , getBlogCollectionList: {url: blogHost + '/blog/collectionListByUserId'}        //获取博客收藏列表
+    , deleteBlogCollection: {url: blogHost + '/blog/deleteCollection'}                       //删除博客收藏
+    , getBlogCommentList: {url: blogHost + '/blog/commentList'}
+    , getBlogById: {url: blogHost + '/blog/blogDetail'}//获取角色
+    , sendBlogComment: {url: blogHost + '/blog/sendComment'}//获取角色
     , deleteBlogComment: {url: blogHost + '/blog/deleteComment'}
     , deleteBlog: {url: blogHost + '/blog/deleteBlog'}
+    , countBlogComment: {url: blogHost + '/blog/countComment'}
 
     , updateNews: {url: newsHost + '/news/updateNews'}
     , deleteNews: {url: newsHost + '/news/deleteNews'}
     , getNewsList: {url: newsHost + '/news/newsList'}
+    , sendNewsComment: {url: newsHost + '/news/sendComment'}//获取角色
     , getNewsCommentList: {url: newsHost + '/news/commentList'}
+    , getNewsCollectionList: {url: newsHost + '/news/collectionListByUserId'}        //获取博客收藏列表
+    , deleteNewsCollection: {url: newsHost + '/news/deleteCollection'}
+    , getNewsById: {url: newsHost + '/news/newsDetail'}
     , deleteNewsComment: {url: newsHost + '/news/deleteComment'}
+    , countNewsComment: {url: newsHost + '/news/countComment'}
 
     , updatePost: {url: postHost + '/post/updatePost'}
     , deletePost: {url: postHost + '/post/deletePost'}
+    , sendPostComment: {url: postHost + '/post/sendComment'}//获取角色
+    , getPostCollectionList: {url: postHost + '/post/collectionListByUserId'}        //获取博客收藏列表
+    , deletePostCollection: {url: postHost + '/post/deleteCollection'}
     , getPostList: {url: postHost + '/post/postList'}
+    , getPostById: {url: postHost + '/post/postDetail'}
     , getPostCommentList: {url: postHost + '/post/commentList'}
     , deletePostComment: {url: postHost + '/post/deleteComment'}
+    , countPostComment: {url: postHost + '/post/countComment'}
 
     , addUser: {url: userHost + '/user/addUser'}
     , updateUser: {url: userHost + '/user/updateUser'}

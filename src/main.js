@@ -4,7 +4,6 @@ import router from './router'
 import axios from 'axios';
 import url from './components/common/apiUrl'
 import api from './components/common/apiUtil'
-import utils from './components/common/utils'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import ElementUI from 'element-ui';
@@ -13,6 +12,7 @@ import './components/common/directives';
 import "babel-polyfill";
 import bus from 'vue-bus'
 import BootstrapVue from 'bootstrap-vue'
+import './assets/base.css'
 
 Vue.use(BootstrapVue)
 Vue.use(bus);
@@ -22,7 +22,6 @@ Vue.use(ElementUI, {
 });
 Vue.prototype.axiosProxy = api.generateApiMap(url);
 Vue.prototype.$axios = axios;
-Vue.use(utils);
 
 new Vue({
     router,

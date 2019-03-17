@@ -4,7 +4,13 @@
 			<div class="plugins-tips">
 				内容编辑
 			</div>
+			<el-form>
+				<el-form-item label="标题">
+					<el-input v-model="title"></el-input>
+				</el-form-item>
+			</el-form>
 			<quill-editor :options="editorOption" ref="myTextEditor" v-model="content"></quill-editor>
+			
 			<el-button @click="submit" class="editor-btn" type="primary">提交</el-button>
 		</div>
 		
@@ -49,6 +55,7 @@
                 upimgShow: false,//控制上传图片展示
                 videofile: '',
                 imgfile: '',
+                title: '',
                 content: '',//编辑器内容
                 editorVal: '',
                 editorOption: {
@@ -89,24 +96,35 @@
         methods: {
             submit() {
                 console.log(this.content);
-                //提交
+                let params = {
+                    postId: 1,
+                    title: this.title,
+                    content: this.content
+                }
+                this.axiosProxy.updatePost(params).then(response => {
+                    if (response.data) {
+                        this.$message("成功")
+                    } else {
+                        this.$message("失败")
+                    }
+                })
             },
-            cancelupImg() {//取消上传图片 关闭浮层并清除文件
+            cancelupImg() {
                 this.$refs.imgfilereset.reset();
                 this.upimgShow = false
             },
-            cancelupVideo() {//取消上传视频 关闭浮层并清除文件
+            cancelupVideo() {
                 this.$refs.videofilereset.reset();
                 this.upvideoShow = false
             },
             upImg() {//上传图片
                 var that = this
                 if (that.imgfile === undefined || that.imgfile == null) {
-                    alert('请选择图片')
+                    this.$message('请选择图片')
                 }
                 that.jindu = 0
                 that.showFloat = true
-                //随机9位数名称(由于此项目文件是上传到阿里云的oss上面的，所以同一天的同名文件会覆盖，按需添加)
+                var a = that.imgfile.name
                 let param = new FormData(); //创建form对象
                 param.append('file', that.imgfile, that.imgfile.name);//视频
                 let config = {
@@ -136,10 +154,10 @@
                         } else {
                             that.showFloat = false
                             that.upimgShow = false
-                            alert('插入失败,请重试')
+                            this.$message('插入失败,请重试')
                         }
                     }).catch(function (error) {
-                    alert(error)
+                    this.$message(error)
                     that.showFloat = false
                     that.upimgShow = false
                 })
@@ -147,7 +165,7 @@
             upVideo() {//上传视频
                 var that = this
                 if (that.imgfile === undefined || that.videofile == null) {
-                    alert('请选择视频')
+                    this.$message('请选择视频')
                 }
                 that.jindu = 0
                 that.showFloat = true
@@ -178,10 +196,10 @@
                         } else {
                             that.showFloat = false
                             that.upvideoShow = false
-                            alert('插入失败,请重试')
+                            this.$message('插入失败,请重试')
                         }
                     }).catch(function (error) {
-                    alert('插入失败,请重试')
+                    this.$message('插入失败,请重试')
                     that.showFloat = false
                     that.upvideoShow = false
                 })

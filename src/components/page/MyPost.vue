@@ -1,10 +1,10 @@
 <template>
 	<el-container>
-		<el-header>
-			<v-category></v-category>
-		</el-header>
 		<el-main class="main" v-loading="loading">
-			<v-news :newsData="newsData" v-for=" newsData in news"></v-news>
+			<ul>
+				<v-post :commentNum="commentNum" :key="postData.id" :postData="postData"
+				        v-for=" postData in post"></v-post>
+			</ul>
 		</el-main>
 		<el-footer>
 			<el-pagination :current-page="current" :page-size="size" :total="total"
@@ -17,24 +17,24 @@
 </template>
 
 <script>
-    import vCategory from '../common/Category.vue'
-    import vNews from '../common/News.vue'
+    import vPost from '../common/Post.vue'
 
     export default {
         components: {
-            vCategory, vNews
+            vPost
         },
         mounted() {
             this.$bus.on('handleCate', (e) => {
                 this.categoryId = e;
                 this.current = 0;
-                this.getNewsList();
+                this.getPostList();
             })
         },
         data() {
             return {
+                commentNum: 0,
                 categoryId: '',
-                news: [],
+                post: [],
                 size: 8,
                 current: 0,
                 total: 0,
@@ -43,24 +43,25 @@
             }
         },
         created() {
-            this.getNewsList()
+            this.getPostList()
         },
         methods: {
             handleCurrentChange(val) {
                 this.current = val;
-                this.getNewsList();
+                this.getPostList();
             },
-            getNewsList() {
+            getPostList() {
                 this.loading = true;
+                var userId = localStorage.getItem('userId')
                 let params = {
                     current: this.current,
                     size: this.size,
                     t: {
-                        categoryId: this.categoryId
+                        userId: userId
                     }
                 }
-                this.axiosProxy.getNewsList(params).then(response => {
-                    this.news = response.data.records;
+                this.axiosProxy.getPostList(params).then(response => {
+                    this.post = response.data.records;
                     this.total = response.data.total;
                     this.pages = response.data.pages;
                     this.loading = false;
@@ -71,6 +72,10 @@
 </script>
 
 <style scoped>
+	.main {
+		margin: 20px 0;
+	}
+	
 	h1, h2 {
 		font-weight: normal;
 	}
@@ -88,11 +93,6 @@
 	a {
 		color: inherit;
 		text-decoration: none;
-	}
-	
-	.pagination {
-		margin: 20px 0;
-		text-align: right;
 	}
 
 </style>
