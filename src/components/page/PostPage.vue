@@ -3,7 +3,12 @@
 		<el-main class="main" v-loading="loading">
 			<div style="width: 90%;margin: 0 auto">
 				<img alt="140x140" class="img-responsive" src="http://47.95.14.18:9080/mvn/img/xuewen.png"
-				     style="width: 100%;margin-bottom: 30px"/>
+				     style="width: 100%;"/>
+			</div>
+			<div style="text-align: right;margin:20px 120px">
+				<router-link to="/editPostPage">
+					<el-button type="primary">发帖</el-button>
+				</router-link>
 			</div>
 			<el-table
 					:data="post"

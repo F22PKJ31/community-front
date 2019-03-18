@@ -1,7 +1,6 @@
 <template>
 	<el-card class="post" shadow="hover">
 		<div class="clearfix" slot="header">
-			
 			<div class="container">
 				<div class="post-prview">
 					<a @click="handlePostDetail" class="post-title">{{ postData.title }}</a><br>
@@ -29,20 +28,11 @@
             }
         },
         created() {
-            this.getCommentNum();
+
         },
         methods: {
             handlePostDetail() {
                 this.$router.push({name: 'postDetail', query: {'postId': this.postData.postId}})
-            },
-            getCommentNum() {
-                let params = {
-                    id: this.postData.postId
-                }
-                this.axiosProxy.countPostComment(params).then(response => {
-                    console.log(response)
-                    this.commentNum = response.data;
-                })
             }
         }
     }

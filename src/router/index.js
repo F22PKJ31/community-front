@@ -48,7 +48,11 @@ export default new Router({
             }, {
                 path: '/editPostPage',
                 component: resolve => require(['../components/page/EditPostPage.vue'], resolve),
-                meta: {title: '内容编辑'}
+                meta: {title: '帖子编辑'}
+            }, {
+                path: '/editBlogPage',
+                component: resolve => require(['../components/page/EditBlogPage.vue'], resolve),
+                meta: {title: '博客编辑'}
             }, {
                 path: '/minePage',
                 component: resolve => require(['../components/page/MinePage.vue'], resolve),

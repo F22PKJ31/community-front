@@ -6,6 +6,7 @@ var categoryHost = 'http://127.0.0.1:8015';
 
 export default {
     getBlogList: {url: blogHost + '/blog/blogList'}    //获取博客列表
+    , getBlogListOrderByRead: {url: blogHost + '/blog/blogListOrderByRead'}    //获取博客列表
     , getBlogCollectionList: {url: blogHost + '/blog/collectionListByUserId'}        //获取博客收藏列表
     , deleteBlogCollection: {url: blogHost + '/blog/deleteCollection'}                       //删除博客收藏
     , getBlogCommentList: {url: blogHost + '/blog/commentList'}
@@ -27,11 +28,13 @@ export default {
     , countNewsComment: {url: newsHost + '/news/countComment'}
 
     , updatePost: {url: postHost + '/post/updatePost'}
+    , sendPost: {url: postHost + '/post/sendPost'}
     , deletePost: {url: postHost + '/post/deletePost'}
     , sendPostComment: {url: postHost + '/post/sendComment'}//获取角色
     , getPostCollectionList: {url: postHost + '/post/collectionListByUserId'}        //获取博客收藏列表
     , deletePostCollection: {url: postHost + '/post/deleteCollection'}
     , getPostList: {url: postHost + '/post/postList'}
+    , getPostListOrderByRead: {url: postHost + '/post/postListOrderByRead'}
     , getPostById: {url: postHost + '/post/postDetail'}
     , getPostCommentList: {url: postHost + '/post/commentList'}
     , deletePostComment: {url: postHost + '/post/deleteComment'}
@@ -47,6 +50,7 @@ export default {
     , getCategoryListByPage: {url: categoryHost + '/category/categoryListByPage'}
     , addCategory: {url: categoryHost + '/category/addCategory'}
     , updateBlog: {url: blogHost + '/blog/updateBlog'}
+    , sendBlog: {url: blogHost + '/blog/sendBlog'}
     , updateCategory: {url: categoryHost + '/category/updateCategory'}
     , deleteCategory: {url: categoryHost + '/category/deleteCategory'}
     // , deleteComment: {url: blogHost + '/blog/deleteComment'}

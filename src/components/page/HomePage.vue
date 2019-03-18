@@ -17,44 +17,58 @@
 		</el-header>
 		<el-main style="margin-top: 200px">
 			<el-row :gutter="20">
-				<el-col :span="8">
-					<h5>最新要闻</h5>
-					<div class="thumbnail" v-for="n in news">
+				<h3>最新要闻</h3>
+				<el-col :span="8" v-for="n in news">
+					<div class="thumbnail">
 						<div class="caption">
-							<h3>{{n.title}}
-							</h3>
-							{{n.content.length>30?n.content.substring(0,30)+'...':n.content}}
-							<p>
-								<a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">查看详情</a>
-							</p>
+							<div style="height: 60px;text-align: center">
+								<h5>{{n.title}}</h5>
+							</div>
+							<img :src="n.imgUrl" width="100%">
+							<el-badge :max="999" :value="n.readCount" class="replies-num"
+							          style="float: left;margin-top: 20px">
+								<el-button>评论</el-button>
+							</el-badge>
+							<div style="width: 100%;text-align: right;margin-top: 20px">
+								<el-button @click="handleNewsDetail(n)" type="primary">查看详情</el-button>
+							</div>
 						</div>
 					</div>
 				</el-col>
-				<el-col :span="8">
-					<h5>优质博客</h5>
-					<div class="thumbnail" v-for="n in blog">
-						<div class="caption">
-							<h3>{{n.title}}
-							</h3>
-							{{n.content.length>30?n.content.substring(0,30)+'...':n.content}}
-							<p>
-								<a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">查看详情</a>
-							</p>
-						</div>
-					</div>
+			</el-row>
+			<el-row :gutter="20">
+				<el-col :span="12">
+					<h3>优质博客</h3>
+					<v-blog :blogData="blogData" style="width: 100%" v-for="blogData in blog"></v-blog>
 				</el-col>
-				<el-col :span="8">
-					<h5>最热帖子</h5>
-					<div class="thumbnail" v-for="n in posts">
-						<div class="caption">
-							<h3>{{n.title}}
-							</h3>
-							{{n.content.length>30?n.content.substring(0,30)+'...':n.content}}
-							<p>
-								<a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">查看详情</a>
-							</p>
-						</div>
-					</div>
+				<el-col :span="12">
+					<h3>最热帖子</h3>
+					<el-table
+							:data="posts"
+							@row-click="handlePostDetail"
+							style="width: 100%;margin: 0 auto">
+						<el-table-column
+								label="标题"
+								prop="title">
+						</el-table-column>
+						<el-table-column
+								label="提问人"
+								prop="userName"
+								width="180">
+						</el-table-column>
+						<el-table-column
+								label="回复数"
+								prop="readCount"
+								sortable
+								width="100">
+						</el-table-column>
+						<el-table-column
+								label="创建时间"
+								prop="createTime"
+								sortable
+								width="180">
+						</el-table-column>
+					</el-table>
 				</el-col>
 			</el-row>
 		</el-main>
@@ -62,8 +76,12 @@
 </template>
 
 <script>
+    import vBlog from '../common/Blog.vue'
+    import vPost from '../common/Post.vue'
+
     export default {
         name: 'homePage',
+        components: {vBlog, vPost},
         data() {
             return {
                 news: '',
@@ -94,11 +112,11 @@
                 this.loading = true;
                 let params = {
                     current: 1,
-                    size: 3,
+                    size: 10,
                     t: {}
                 }
-                this.axiosProxy.getPostList(params).then(response => {
-                    this.post = response.data.records;
+                this.axiosProxy.getPostListOrderByRead(params).then(response => {
+                    this.posts = response.data.records;
                     this.loading = false;
                 })
             },
@@ -109,10 +127,15 @@
                     size: 3,
                     t: {}
                 }
-                this.axiosProxy.getBlogList(params).then(response => {
+                this.axiosProxy.getBlogListOrderByRead(params).then(response => {
                     this.blog = response.data.records;
                     this.loading = false;
                 })
+            }, handlePostDetail(row, column, event) {
+                console.log(row);
+                this.$router.push({name: 'postDetail', query: {'postId': row.postId}})
+            }, handleNewsDetail(news) {
+                this.$router.push({name: 'newsDetail', query: {'newsId': news.newsId}})
             }
         }
     }
@@ -140,5 +163,9 @@
 		border: 1px solid #ccc;
 		background-color: #fff;
 		padding: 10px;
+	}
+	
+	h3 {
+		padding: 20px;
 	}
 </style>

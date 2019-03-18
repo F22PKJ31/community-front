@@ -5,7 +5,7 @@
 				<div class="blog-prview">
 					<a @click="handlePostDetail" class="blog-title">{{ blogData.title }}</a><br>
 					<a class="author" v-bind:href="blogData.userId">{{ blogData.userName }}</a>
-					<el-badge :max="999" :value="commentNum" class="replies-num">
+					<el-badge :max="999" :value="blogData.readCount" class="replies-num">
 						<el-button>评论</el-button>
 					</el-badge>
 				</div>
@@ -24,23 +24,13 @@
         props: ['blogData'],
         data() {
             return {
-                commentNum: 0
             }
         },
         created() {
-            this.getCommentNum();
         },
         methods: {
             handlePostDetail() {
                 this.$router.push({name: 'blogDetail', query: {'blogId': this.blogData.blogId}})
-            },
-            getCommentNum() {
-                let params = {
-                    id: this.blogData.blogId
-                }
-                this.axiosProxy.countBlogComment(params).then(response => {
-                    this.commentNum = response.data;
-                })
             }
         }
     }

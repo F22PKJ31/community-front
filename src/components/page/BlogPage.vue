@@ -2,7 +2,7 @@
 	<el-container>
 		<el-header>
 			<div style="text-align: right;margin:20px 120px">
-				<router-link to="/editPostPage">
+				<router-link to="/editBlogPage">
 					<el-button type="primary">撰写博客</el-button>
 				</router-link>
 			</div>

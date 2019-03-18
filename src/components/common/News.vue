@@ -5,7 +5,7 @@
 				<div class="news-prview">
 					<a @click="handlePostDetail" class="news-title">{{ newsData.title }}</a><br>
 					<a class="author" v-bind:href="newsData.userId">{{ newsData.userName }}</a>
-					<el-badge :max="999" :value="commentNum" class="replies-num">
+					<el-badge :max="999" :value="newsData.readCount" class="replies-num">
 						<el-button>评论</el-button>
 					</el-badge>
 				</div>
@@ -24,25 +24,14 @@
         props: ['newsData'],
         data() {
             return {
-                commentNum: 0
             }
         },
         created() {
-            this.getCommentNum();
             console.log(this.newsData.newsId)
         },
         methods: {
             handlePostDetail() {
                 this.$router.push({name: 'newsDetail', query: {'newsId': this.newsData.newsId}})
-            },
-            getCommentNum() {
-                let params = {
-                    id: this.newsData.newsId
-                }
-                this.axiosProxy.countNewsComment(params).then(response => {
-                    console.log(response)
-                    this.commentNum = response.data;
-                })
             }
         }
     }
