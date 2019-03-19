@@ -9,7 +9,8 @@
 					<el-input v-model="params.title"></el-input>
 				</el-form-item>
 			</el-form>
-			<quill-editor :options="editorOption" ref="myTextEditor" v-model="params.content"></quill-editor>
+			<quill-editor :options="editorOption" ref="myTextEditor" style="width: 100%;"
+			              v-model="params.content"></quill-editor>
 			
 			<el-button @click="submit" class="editor-btn" type="primary">提交</el-button>
 		</div>
@@ -143,7 +144,8 @@
                             let quill = that.$refs.myTextEditor.quill;
                             let length = quill.getSelection().index;
                             // 插入图片  response.data.url为服务器返回的图片地址
-                            quill.insertEmbed(length, 'image', response.data.url)
+                            var a = quill.insertEmbed(length, 'image', response.data.url)
+                            console.log(a);
                             // 调整光标到最后
                             quill.setSelection(length + 1)
                             that.showFloat = false
@@ -217,6 +219,17 @@
 <style>
 	.editor-btn {
 		margin-top: 20px;
+	}
+	
+	iframe {
+		height: 600px;
+		width: 800px;
+		display: block;
+		margin: 0 auto;
+	}
+	
+	img {
+		width: 600px;
 	}
 	
 	.plugins-tips {
