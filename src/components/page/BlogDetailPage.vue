@@ -1,7 +1,16 @@
 <template>
 	<el-container style="margin: 30px 60px">
 		<el-header>
-			<el-button style="margin: 10px 0;float: right" type="primary" v-if="blog.userId==this.userId">编辑</el-button>
+			<el-button @click="editBlog()" style="margin: 10px 0;float: right" type="primary"
+			           v-if="blog.userId==this.userId">编辑
+			</el-button>
+			<el-button @click="saveCollection()" style="margin: 10px 0;float: right" type="primary"
+			           v-if="blog.userId!=this.userId&&!isCollection">收藏
+			</el-button>
+			<el-button @click="deleteCollection()" style="margin: 10px 0;float: right" type="warning"
+			           v-if="blog.userId!=this.userId&&isCollection">取消收藏
+				<el-button style="margin: 10px 0;float: right" type="danger" v-if="!this.userId">登陆后收藏</el-button>
+			</el-button>
 			<h2>{{blog.title}}</h2>
 			<div style="text-align: right">
 				<a class="author" v-bind:href="blog.userId">{{ blog.userName }}</a>
@@ -44,9 +53,10 @@
                 current: 0,
                 total: 0,
                 pages: 0,
+                isCollection: false,
                 commentList: '',
                 newComment: '',
-                blog: '',
+                blog: {},
                 userId: localStorage.getItem('userId'),
                 loading: true
             }
@@ -54,11 +64,11 @@
         created() {
             this.axiosProxy.getBlogById({'id': this.$route.query.blogId}).then(response => {
                 this.blog = response.data;
+                console.log(this.blog.userId)
                 this.getBlogCommentList();
             });
-        },
-        computed() {
-            userId = localStorage.getItem('userId')
+            console.log(this.userId)
+            this.getCollectionByUserId();
         },
         methods: {
             handleCurrentChange(val) {
@@ -102,7 +112,59 @@
                     }
 
                 })
+            }, saveCollection() {
+
+                let params = {
+                    userId: localStorage.getItem("userId"),
+                    userName: localStorage.getItem("userName"),
+                    blogId: this.blog.blogId,
+                    blogName: this.blog.blogName
+                }
+                this.axiosProxy.saveBlogCollection(params).then(response => {
+                    if (response.data) {
+                        this.$message('收藏成功');
+                        this.isCollection = true;
+                        this.getCollectionByUserId();
+                    } else {
+                        this.$message('收藏失败');
+                    }
+                })
+            }, getCollectionByUserId() {
+
+                let params = {
+                    t: {
+                        userId: localStorage.getItem("userId"),
+                        userName: localStorage.getItem("userName"),
+                        blogId: this.blog.blogId,
+                        blogName: this.blog.blogName
+                    }
+                }
+                this.axiosProxy.getBlogCollectionList(params).then(response => {
+                    if (response.data.records.length !== 0) {
+                        this.isCollection = true;
+                        this.collectionId = response.data.records[0].collectionId;
+                    } else {
+                        this.isCollection = false;
+                    }
+                })
+            }, deleteCollection() {
+
+                let params = {
+                    id: this.collectionId
+                }
+                this.axiosProxy.deleteBlogCollection(params).then(response => {
+                    console.log(this.collectionId)
+                    if (response.data) {
+                        this.$message('取消成功');
+                        this.isCollection = false;
+                    } else {
+                        this.$message('取消失败');
+                    }
+                })
+            }, editBlog() {
+                this.$router.push({name: 'editBlogPage', query: {'blogId': this.blog.blogId}})
             }
+
         }
     };
 </script>
@@ -141,5 +203,16 @@
 	}
 
 
+</style>
+<style>
+	frame {
+		width: 800px;
+		height: 600px;
+		margin: 0 auto;
+	}
+	
+	img {
+		max-width: 100%;
+	}
 </style>
 

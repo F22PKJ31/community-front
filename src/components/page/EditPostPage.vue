@@ -6,10 +6,11 @@
 			</div>
 			<el-form>
 				<el-form-item label="标题">
-					<el-input v-model="title"></el-input>
+					<el-input v-model="params.title"></el-input>
 				</el-form-item>
 			</el-form>
-			<quill-editor :options="editorOption" ref="myTextEditor" v-model="content"></quill-editor>
+			<quill-editor :options="editorOption" ref="myTextEditor" style="background-color: #FFFFFF"
+			              v-model="params.content"></quill-editor>
 			
 			<el-button @click="submit" class="editor-btn" type="primary">提交</el-button>
 		</div>
@@ -47,6 +48,14 @@
 
     export default {
         name: 'editor',
+        created() {
+            if (this.$route.query.postId != null) {
+                this.params.postId = this.$route.query.postId;
+                this.getPostById();
+            }
+            this.params.userId = localStorage.getItem('userId');
+            this.params.userName = localStorage.getItem('userName');
+        },
         data() {
             return {
                 showFloat: false,//控制上传进度展示浮层
@@ -55,6 +64,7 @@
                 upimgShow: false,//控制上传图片展示
                 videofile: '',
                 imgfile: '',
+                params: {},
                 title: '',
                 content: '',//编辑器内容
                 editorVal: '',
@@ -95,13 +105,7 @@
         },
         methods: {
             submit() {
-                console.log(this.content);
-                let params = {
-                    postId: 1,
-                    title: this.title,
-                    content: this.content
-                }
-                this.axiosProxy.updatePost(params).then(response => {
+                this.axiosProxy.updatePost(this.params).then(response => {
                     if (response.data) {
                         this.$message("成功")
                     } else {
@@ -203,6 +207,14 @@
                     that.showFloat = false
                     that.upvideoShow = false
                 })
+            },
+            getPostById() {
+                let params = {
+                    id: this.params.postId
+                };
+                this.axiosProxy.getPostById(params).then(response => {
+                    this.params = response.data;
+                })
             }
         },
         computed: {
@@ -226,6 +238,12 @@
 		padding: 20px 10px;
 		margin-bottom: 20px;
 		background: #eef1f6;
+	}
+	
+	frame {
+		width: 800px;
+		height: 600px;
+		margin: 0 auto;
 	}
 	
 	.proessBox {

@@ -58,7 +58,7 @@
                 total: 0,
                 pages: 0,
                 loading: true,
-                activeName: 'second'
+                activeName: 'first'
             }
         },
         created() {

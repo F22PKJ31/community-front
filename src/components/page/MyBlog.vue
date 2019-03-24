@@ -50,7 +50,7 @@
             }
         },
         created() {
-            console.log(this.localStorage.getItem('userId'))
+            console.log(localStorage.getItem('userId'))
             this.getBlogList()
         },
         methods: {
@@ -64,7 +64,7 @@
                     current: this.current,
                     size: this.size,
                     t: {
-                        userId: this.localStorage.getItem('userId')
+                        userId: localStorage.getItem('userId')
                     }
                 }
                 this.axiosProxy.getBlogList(params).then(response => {

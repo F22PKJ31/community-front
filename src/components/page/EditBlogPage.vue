@@ -7,9 +7,15 @@
 			<el-form>
 				<el-form-item label="标题">
 					<el-input v-model="params.title"></el-input>
+					<el-input type="hidden" v-model="params.userId"></el-input>
+					<el-input type="hidden" v-model="params.userName"></el-input>
+					<el-select v-model="category" value-key="categoryId">
+						<el-option :key="c.categoryId" :label="c.categoryName" :value="c" v-for="c in categoryList">
+						</el-option>
+					</el-select>
 				</el-form-item>
 			</el-form>
-			<quill-editor :options="editorOption" ref="myTextEditor" style="width: 100%;"
+			<quill-editor :options="editorOption" ref="myTextEditor" style="width: 100%;background-color: #FFFFFF"
 			              v-model="params.content"></quill-editor>
 			
 			<el-button @click="submit" class="editor-btn" type="primary">提交</el-button>
@@ -45,18 +51,34 @@
     import 'quill/dist/quill.snow.css';
     import 'quill/dist/quill.bubble.css';
     import {Quill, quillEditor} from 'vue-quill-editor'
+    import ElSelectDropdown from "element-ui/packages/select/src/select-dropdown";
 
     export default {
         name: 'editor',
+        created() {
+            this.getCategoryList();
+            if (this.$route.query.blogId != null) {
+                this.params.blogId = this.$route.query.blogId;
+                this.getBlogById();
+            }
+            this.params.userId = localStorage.getItem('userId');
+            this.params.userName = localStorage.getItem('userName');
+        },
         data() {
             return {
+                categoryList: '',
                 showFloat: false,//控制上传进度展示浮层
                 jindu: 0,//上传进度
                 upvideoShow: false,//控制上传视频展示
                 upimgShow: false,//控制上传图片展示
                 videofile: '',
                 imgfile: '',
+                category: {},
                 params: {
+                    userId: '',
+                    userName: '',
+                    categoryName: '',
+                    categoryId: '',
                     title: '',
                     content: ''
                 },
@@ -94,11 +116,14 @@
             }
         },
         components: {
+            ElSelectDropdown,
             quillEditor
         },
         methods: {
             submit() {
-                console.log(this.content);
+                this.params.categoryId = this.category.categoryId;
+                this.params.categoryName = this.category.categoryName;
+                console.log(this.params);
                 this.axiosProxy.updateBlog(this.params).then(response => {
                     if (response.data) {
                         this.$message('成功')
@@ -116,25 +141,25 @@
                 this.upvideoShow = false
             },
             upImg() {//上传图片
-                var that = this
+                var that = this;
                 if (that.imgfile === undefined || that.imgfile == null) {
                     this.$message('请选择图片')
                 }
-                that.jindu = 0
-                that.showFloat = true
-                var a = that.imgfile.name
+                that.jindu = 0;
+                that.showFloat = true;
+                var a = that.imgfile.name;
                 let param = new FormData(); //创建form对象
                 param.append('file', that.imgfile, that.imgfile.name);//视频
                 let config = {
                     onUploadProgress: progressEvent => {
-                        var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+                        var complete = (progressEvent.loaded / progressEvent.total * 100 | 0);
                         // console.log('进度值',complete)
                         that.jindu = complete
                     },
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
-                }
+                };
                 this.$axios.post('http://127.0.0.1:8010/file/uploadFile', param, config)//url为上传地址
                     .then(response => {
                         that.$refs.imgfilereset.reset();//清除文件
@@ -144,66 +169,83 @@
                             let quill = that.$refs.myTextEditor.quill;
                             let length = quill.getSelection().index;
                             // 插入图片  response.data.url为服务器返回的图片地址
-                            var a = quill.insertEmbed(length, 'image', response.data.url)
+                            var a = quill.insertEmbed(length, 'image', response.data.url);
                             console.log(a);
                             // 调整光标到最后
-                            quill.setSelection(length + 1)
-                            that.showFloat = false
+                            quill.setSelection(length + 1);
+                            that.showFloat = false;
                             that.upimgShow = false
                         } else {
-                            that.showFloat = false
-                            that.upimgShow = false
+                            that.showFloat = false;
+                            that.upimgShow = false;
                             this.$message('插入失败,请重试')
                         }
                     }).catch(function (error) {
-                    this.$message(error)
-                    that.showFloat = false
+                    this.$message(error);
+                    that.showFloat = false;
                     that.upimgShow = false
                 })
             },
             upVideo() {//上传视频
-                var that = this
+                var that = this;
                 if (that.imgfile === undefined || that.videofile == null) {
                     this.$message('请选择视频')
                 }
-                that.jindu = 0
-                that.showFloat = true
+                that.jindu = 0;
+                that.showFloat = true;
                 let param = new FormData(); //创建form对象
                 param.append('file', that.videofile, that.videofile.name);//视频
                 let config = {
                     onUploadProgress: progressEvent => {
-                        var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+                        var complete = (progressEvent.loaded / progressEvent.total * 100 | 0);
                         that.jindu = complete
                     },
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
-                }
+                };
                 this.$axios.post('http://127.0.0.1:8010/file/uploadFile', param, config)//url为上传地址
                     .then(response => {
                         that.$refs.videofilereset.reset();//清除文件
                         if (response.data.error === '0') {
                             // 获取光标所在位置
-                            let quill = that.$refs.myTextEditor.quill
+                            let quill = that.$refs.myTextEditor.quill;
                             let length = quill.getSelection().index;
                             // 插入视频  response.data.url为服务器返回的图片地址
-                            quill.insertEmbed(length, 'video', response.data.url)
+                            quill.insertEmbed(length, 'video', response.data.url);
                             // 调整光标到最后
-                            quill.setSelection(length + 1)
-                            that.showFloat = false
+                            quill.setSelection(length + 1);
+                            that.showFloat = false;
                             that.upvideoShow = false
                         } else {
-                            that.showFloat = false
-                            that.upvideoShow = false
+                            that.showFloat = false;
+                            that.upvideoShow = false;
                             this.$message('插入失败,请重试')
                         }
                     }).catch(function (error) {
-                    this.$message('插入失败,请重试')
-                    that.showFloat = false
+                    this.$message('插入失败,请重试');
+                    that.showFloat = false;
                     that.upvideoShow = false
+                })
+            },
+            getCategoryList() {
+                let params = {};
+                this.axiosProxy.getCategoryList(params).then(response => {
+                    this.categoryList = response.data;
+                })
+            },
+            getBlogById() {
+                let params = {
+                    id: this.params.blogId
+                };
+                this.axiosProxy.getBlogById(params).then(response => {
+                    this.params = response.data;
+                    this.category.categoryId = this.params.categoryId;
+                    this.category.categoryName = this.params.categoryName;
                 })
             }
         },
+
         computed: {
             editor() {
                 return this.$refs.myTextEditor.quillEditor;
@@ -221,15 +263,10 @@
 		margin-top: 20px;
 	}
 	
-	iframe {
-		height: 600px;
+	frame {
 		width: 800px;
-		display: block;
+		height: 600px;
 		margin: 0 auto;
-	}
-	
-	img {
-		width: 600px;
 	}
 	
 	.plugins-tips {

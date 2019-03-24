@@ -3,14 +3,8 @@
 		<el-header>
 			<template>
 				<el-carousel :interval="4000" height="250px" type="card">
-					<el-carousel-item>
-						<img src="../../assets/tupian1.jpg" style="width: 100%"/>
-					</el-carousel-item>
-					<el-carousel-item>
-						<img src="../../assets/tupian2.jpg" style="width: 100%"/>
-					</el-carousel-item>
-					<el-carousel-item>
-						<img src="../../assets/tupian3.jpg" style="width: 100%"/>
+					<el-carousel-item v-for="img in headImg">
+						<img :src="img.imgUrl" @click="handleNewsDetail(img)" style="width: 100%"/>
 					</el-carousel-item>
 				</el-carousel>
 			</template>
@@ -21,14 +15,16 @@
 				<el-col :span="8" v-for="n in news">
 					<div class="thumbnail">
 						<div class="caption">
-							<div style="height: 60px;text-align: center">
-								<h5>{{n.title}}</h5>
+							<div @click="handleNewsDetail(n)">
+								<div style="height: 60px;text-align: center">
+									<h5>{{n.title}}</h5>
+								</div>
+								<img :src="n.imgUrl" width="100%">
+								<el-badge :max="999" :value="n.readCount" class="replies-num"
+								          style="float: left;margin-top: 20px">
+									<el-button>评论</el-button>
+								</el-badge>
 							</div>
-							<img :src="n.imgUrl" width="100%">
-							<el-badge :max="999" :value="n.readCount" class="replies-num"
-							          style="float: left;margin-top: 20px">
-								<el-button>评论</el-button>
-							</el-badge>
 							<div style="width: 100%;text-align: right;margin-top: 20px">
 								<el-button @click="handleNewsDetail(n)" type="primary">查看详情</el-button>
 							</div>
@@ -87,12 +83,14 @@
                 news: '',
                 posts: '',
                 blog: '',
+                headImg: ''
             }
         },
         created() {
             this.getBlogList();
             this.getPostList();
             this.getNewsList();
+            this.getHeadImgList();
         },
         computed: {},
         methods: {
@@ -105,6 +103,17 @@
                 }
                 this.axiosProxy.getNewsList(params).then(response => {
                     this.news = response.data.records;
+                    this.loading = false;
+                })
+            }, getHeadImgList() {
+                this.loading = true;
+                let params = {
+                    current: 1,
+                    size: 3,
+                    t: {}
+                }
+                this.axiosProxy.headImgList(params).then(response => {
+                    this.headImg = response.data.records;
                     this.loading = false;
                 })
             },
@@ -167,5 +176,9 @@
 	
 	h3 {
 		padding: 20px;
+	}
+	
+	a {
+		text-decoration: none;
 	}
 </style>

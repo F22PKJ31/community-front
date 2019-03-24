@@ -1,7 +1,7 @@
 import axios from 'axios'
 import _ from 'lodash'
 
-axios.defaults.timeout = 5000; // 超时时间
+axios.defaults.timeout = 10000; // 超时时间
 
 const generateApiMap = (map) => {
     let facade = {}

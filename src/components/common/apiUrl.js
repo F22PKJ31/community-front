@@ -53,5 +53,10 @@ export default {
     , sendBlog: {url: blogHost + '/blog/sendBlog'}
     , updateCategory: {url: categoryHost + '/category/updateCategory'}
     , deleteCategory: {url: categoryHost + '/category/deleteCategory'}
+
+    , saveNewsCollection: {url: newsHost + '/news/saveCollection'}
+    , savePostCollection: {url: postHost + '/post/saveCollection'}
+    , saveBlogCollection: {url: blogHost + '/blog/saveCollection'}
+    , headImgList: {url: newsHost + '/news/headImgList'}
     // , deleteComment: {url: blogHost + '/blog/deleteComment'}
 }
