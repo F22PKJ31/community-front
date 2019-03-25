@@ -100,7 +100,7 @@
                     userId: localStorage.getItem("userId"),
                     userName: localStorage.getItem("userName"),
                     blogId: this.blog.blogId,
-                    blogName: this.blog.blogName
+                    blogTitle: this.blog.title
                 }
                 this.axiosProxy.sendBlogComment(params).then(response => {
                     if (response.data) {
@@ -118,7 +118,7 @@
                     userId: localStorage.getItem("userId"),
                     userName: localStorage.getItem("userName"),
                     blogId: this.blog.blogId,
-                    blogName: this.blog.blogName
+                    blogTitle: this.blog.title
                 }
                 this.axiosProxy.saveBlogCollection(params).then(response => {
                     if (response.data) {
@@ -136,7 +136,7 @@
                         userId: localStorage.getItem("userId"),
                         userName: localStorage.getItem("userName"),
                         blogId: this.blog.blogId,
-                        blogName: this.blog.blogName
+                        blogTitle: this.blog.title
                     }
                 }
                 this.axiosProxy.getBlogCollectionList(params).then(response => {

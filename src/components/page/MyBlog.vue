@@ -1,26 +1,26 @@
 <template>
-	<el-container>
-		<el-header>
-			<div style="text-align: right;margin:20px 120px">
-				<router-link to="/editPostPage">
-					<el-button type="primary">撰写博客</el-button>
-				</router-link>
-			</div>
-		</el-header>
-		<el-main class="main" v-loading="loading">
-			<ul>
-				<v-blog :blogData="blogData" :commentNum="commentNum" :key="blogData.id"
-				        v-for=" blogData in blog"></v-blog>
-			</ul>
-		</el-main>
-		<el-footer>
-			<el-pagination :current-page="current" :page-size="size" :total="total"
-			               @current-change="handleCurrentChange"
-			               background layout="prev, pager, next"
-			               style="float: right">
-			</el-pagination>
-		</el-footer>
-	</el-container>
+    <el-container>
+        <el-header>
+            <div style="text-align: right;margin:0px 120px">
+                <router-link to="/editBlogPage">
+                    <el-button type="primary">撰写博客</el-button>
+                </router-link>
+            </div>
+        </el-header>
+        <el-main class="main" v-loading="loading">
+            <ul>
+                <v-blog :blogData="blogData" :commentNum="commentNum" :key="blogData.id" :flag="flag"
+                        v-for=" blogData in blog"></v-blog>
+            </ul>
+        </el-main>
+        <el-footer>
+            <el-pagination :current-page="current" :page-size="size" :total="total"
+                           @current-change="handleCurrentChange"
+                           background layout="prev, pager, next"
+                           style="float: right">
+            </el-pagination>
+        </el-footer>
+    </el-container>
 </template>
 
 <script>
@@ -30,15 +30,9 @@
         components: {
             vBlog
         },
-        mounted() {
-            this.$bus.on('handleCate', (e) => {
-                this.categoryId = e;
-                this.current = 0;
-                this.getBlogList();
-            })
-        },
         data() {
             return {
+                flag: true,
                 commentNum: 0,
                 categoryId: '',
                 blog: [],
@@ -50,8 +44,11 @@
             }
         },
         created() {
-            console.log(localStorage.getItem('userId'))
             this.getBlogList()
+            this.$bus.on('deleteBlog', (e) => {
+                    this.getBlogList();
+                }
+            )
         },
         methods: {
             handleCurrentChange(val) {
@@ -75,28 +72,29 @@
                 })
             }
         }
-    };
+    }
+    ;
 </script>
 
 <style scoped>
-	h1, h2 {
-		font-weight: normal;
-	}
-	
-	ul {
-		list-style-type: none;
-		padding: 0;
-	}
-	
-	li {
-		display: inline-block;
-		margin: 0 10px;
-	}
-	
-	a {
-		color: inherit;
-		text-decoration: none;
-	}
+    h1, h2 {
+        font-weight: normal;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        display: inline-block;
+        margin: 0 10px;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 
 </style>
 

@@ -100,7 +100,7 @@
                     userId: localStorage.getItem("userId"),
                     userName: localStorage.getItem("userName"),
                     postId: this.post.postId,
-                    postName: this.post.postName
+                    postTitle: this.post.title
                 }
                 this.axiosProxy.sendPostComment(params).then(response => {
                     if (response.data) {
@@ -118,7 +118,7 @@
                     userId: localStorage.getItem("userId"),
                     userName: localStorage.getItem("userName"),
                     postId: this.post.postId,
-                    postName: this.post.postName
+                    postTitle: this.post.title
                 }
                 this.axiosProxy.savePostCollection(params).then(response => {
                     if (response.data) {
@@ -136,7 +136,7 @@
                         userId: localStorage.getItem("userId"),
                         userName: localStorage.getItem("userName"),
                         postId: this.post.postId,
-                        postName: this.post.postName
+                        postTitle: this.post.title
                     }
                 }
                 this.axiosProxy.getPostCollectionList(params).then(response => {

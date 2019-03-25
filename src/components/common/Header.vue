@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-menu :default-active="activeIndex" :router="true" @select="handleSelect"
+		<el-menu :default-active="activeIndex" :router="true"
 		         active-text-color="#ffd04b" background-color="#545c64" class="el-menu-demo" mode="horizontal"
 		         text-color="#fff">
 			<el-menu-item disabled>IT技术视频分享交流社区</el-menu-item>
@@ -8,14 +8,10 @@
 			<el-menu-item index="/newsPage">新闻推荐</el-menu-item>
 			<el-menu-item index="/blogPage">博客中心</el-menu-item>
 			<el-menu-item index="/postPage">社区中心</el-menu-item>
-			<el-menu-item index="/editPostPage">编辑器</el-menu-item>
-			<el-menu-item index="/demo">编辑器</el-menu-item>
 			<el-submenu index="" style="float: right;" v-if="isLogin">
 				<template slot="title">{{userName}}</template>
-				<el-menu-item index="/minePage">个人中心</el-menu-item>
-				<br>
-				<el-menu-item index="/myBlogPage">我的博客</el-menu-item>
-				<br>
+				<el-menu-item @click="handleMinePage">个人中心</el-menu-item><br>
+				<el-menu-item @click="handleMyBlogPage">我的博客</el-menu-item><br>
 				<el-menu-item @click="exit">退出</el-menu-item>
 			</el-submenu>
 			<el-menu-item @click="registerVisible = true;errorVisible2=false;" style="float: right;" v-if="!isLogin">
@@ -126,9 +122,6 @@
             }
         },
         methods: {
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-            },
             login() {
                 let queryParams = {
                     userName: this.form.userName,
@@ -203,7 +196,16 @@
                         this.title = '服务器异常';
                     }
                 })
-            }
+            },
+			handleMinePage() {
+				this.activeIndex = '';
+				this.$router.push({name: 'minePage', query: {'userId': this.userId}})
+			},
+			handleMyBlogPage() {
+				this.activeIndex = '';
+				this.$router.push({name: 'myBlogPage', query: {'userId': this.userId}})
+			}
         }
     }
 </script>
+

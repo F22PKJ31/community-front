@@ -94,7 +94,7 @@
                     userId: localStorage.getItem("userId"),
                     userName: localStorage.getItem("userName"),
                     newsId: this.news.newsId,
-                    newsName: this.news.newsName
+                    newsTitle: this.news.title
                 }
                 this.axiosProxy.sendNewsComment(params).then(response => {
                     if (response.data) {
@@ -112,7 +112,7 @@
                     userId: localStorage.getItem("userId"),
                     userName: localStorage.getItem("userName"),
                     newsId: this.news.newsId,
-                    newsName: this.news.newsName
+                    newsTitle: this.news.title
                 }
                 this.axiosProxy.saveNewsCollection(params).then(response => {
                     if (response.data) {
@@ -130,7 +130,7 @@
                         userId: localStorage.getItem("userId"),
                         userName: localStorage.getItem("userName"),
                         newsId: this.news.newsId,
-                        newsName: this.news.newsName
+                        newsTitle: this.news.title
                     }
                 }
                 this.axiosProxy.getNewsCollectionList(params).then(response => {

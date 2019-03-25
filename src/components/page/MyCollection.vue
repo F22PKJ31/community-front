@@ -1,36 +1,36 @@
 <template>
-	<el-container>
-		<el-header>
-			<el-tabs @tab-click="handleClick" v-model="activeName">
-				<el-tab-pane label="新闻收藏" name="first"></el-tab-pane>
-				<el-tab-pane label="帖子收藏" name="second"></el-tab-pane>
-				<el-tab-pane label="博客收藏" name="third"></el-tab-pane>
-			</el-tabs>
-		</el-header>
-		<el-main>
-			<div v-if="activeName==='first'">
-				<v-collection :collectionData="collection" collectionType="1"
-				              v-for="collection in newsCollection"></v-collection>
-			</div>
-			<div v-else-if="activeName==='second'">
-				<v-collection :collectionData="collection" collectionType="2"
-				              v-for="collection in postCollection"></v-collection>
-			</div>
-			<div v-else>
-				<v-collection :collectionData="collection" collectionType="3"
-				              v-for="collection in blogCollection"></v-collection>
-			</div>
-		</el-main>
-		
-		
-		<el-footer>
-			<el-pagination :current-page="current" :page-size="size" :total="total"
-			               @current-change="handleCurrentChange"
-			               background layout="prev, pager, next"
-			               style="float: right">
-			</el-pagination>
-		</el-footer>
-	</el-container>
+    <el-container>
+        <el-header>
+            <el-tabs @tab-click="handleClick" v-model="activeName">
+                <el-tab-pane label="新闻收藏" name="first"></el-tab-pane>
+                <el-tab-pane label="帖子收藏" name="second"></el-tab-pane>
+                <el-tab-pane label="博客收藏" name="third"></el-tab-pane>
+            </el-tabs>
+        </el-header>
+        <el-main>
+            <div v-if="activeName==='first'">
+                <v-collection :collectionData="collection" collectionType="1"
+                              v-for="collection in newsCollection"></v-collection>
+            </div>
+            <div v-else-if="activeName==='second'">
+                <v-collection :collectionData="collection" collectionType="2"
+                              v-for="collection in postCollection"></v-collection>
+            </div>
+            <div v-else>
+                <v-collection :collectionData="collection" collectionType="3"
+                              v-for="collection in blogCollection"></v-collection>
+            </div>
+        </el-main>
+
+
+        <el-footer>
+            <el-pagination :current-page="current" :page-size="size" :total="total"
+                           @current-change="handleCurrentChange"
+                           background layout="prev, pager, next"
+                           style="float: right">
+            </el-pagination>
+        </el-footer>
+    </el-container>
 </template>
 
 <script>
@@ -40,13 +40,7 @@
         components: {
             vCollection
         },
-        mounted() {
-            this.$bus.on('handleCate', (e) => {
-                this.categoryId = e;
-                this.current = 0;
-                this.getNewsCollectionList();
-            })
-        },
+        props:['user'],
         data() {
             return {
                 newsCollection: [],
@@ -65,13 +59,23 @@
             this.getNewsCollectionList();
             this.getBlogCollectionList();
             this.getPostCollectionList();
+            this.$bus.on('deleteCollection', (e) => {
+                switch (e) {
+                    case "1":
+                        this.getNewsCollectionList();
+                        break;
+                    case "2":
+                        this.getPostCollectionList();
+                        break;
+                    case "3":
+                        this.getBlogCollectionList();
+                        break;
+                }
+            })
         },
         methods: {
             handleCurrentChange(val) {
                 this.current = val;
-                this.getNewsCollectionList();
-                this.getBlogCollectionList();
-                this.getPostCollectionList();
             },
             getNewsCollectionList() {
                 this.loading = true;
@@ -79,9 +83,9 @@
                     current: this.current,
                     size: this.size,
                     t: {
-                        userId: localStorage.getItem('userId')
+                        userId: this.user.userId
                     }
-                }
+                };
                 this.axiosProxy.getNewsCollectionList(params).then(response => {
                     this.newsCollection = response.data.records;
                     this.total = response.data.total;
@@ -95,7 +99,7 @@
                     current: this.current,
                     size: this.size,
                     t: {
-                        userId: localStorage.getItem('userId')
+                        userId: this.user.userId
                     }
                 }
                 this.axiosProxy.getPostCollectionList(params).then(response => {
@@ -111,7 +115,7 @@
                     current: this.current,
                     size: this.size,
                     t: {
-                        userId: localStorage.getItem('userId')
+                        userId: this.user.userId
                     }
                 }
                 this.axiosProxy.getBlogCollectionList(params).then(response => {
@@ -123,35 +127,42 @@
             },
             handleClick(tab, event) {
                 this.current = 0;
+                if (tab.name == 'first') {
+                    this.getNewsCollectionList();
+                } else if (tab.name == 'second') {
+                    this.getPostCollectionList();
+                } else {
+                    this.getBlogCollectionList();
+                }
             }
         }
     };
 </script>
 
 <style scoped>
-	h1, h2 {
-		font-weight: normal;
-	}
-	
-	ul {
-		list-style-type: none;
-		padding: 0;
-	}
-	
-	li {
-		display: inline-block;
-		margin: 0 10px;
-	}
-	
-	a {
-		color: inherit;
-		text-decoration: none;
-	}
-	
-	.pagination {
-		margin: 20px 0;
-		text-align: right;
-	}
+    h1, h2 {
+        font-weight: normal;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        display: inline-block;
+        margin: 0 10px;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .pagination {
+        margin: 20px 0;
+        text-align: right;
+    }
 
 </style>
 

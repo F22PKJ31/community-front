@@ -57,6 +57,7 @@ export default new Router({
                 meta: {title: '博客编辑'}
             }, {
                 path: '/minePage',
+                name: 'minePage',
                 component: resolve => require(['../components/page/MinePage.vue'], resolve),
                 meta: {title: '个人中心'},
                 children: [{
@@ -65,6 +66,7 @@ export default new Router({
                     meta: {title: '我的帖子'}
                 }, {
                     path: '/minePage/myCollection',
+                    name: 'myCollection',
                     component: resolve => require(['../components/page/MyCollection.vue'], resolve),
                     meta: {title: '我的收藏'}
                 }]
