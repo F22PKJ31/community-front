@@ -6,12 +6,12 @@
                     <div class="news-prview">
                         <a @click="handleDetail" class="news-title">{{ title }}</a>
                         <el-button @click="dialogVisible = true" style="float: right" type="warning">取消收藏</el-button>
-                        <a class="author" v-bind:href="collectionData.userId">{{ collectionData.userName }}</a>
+                        <a class="author" v-bind:href="commentData.userId">{{ commentData.userName }}</a>
                     </div>
                 </div>
             </div>
             <div class="content clearfix">
-                <el-tag style="float: left;">{{collectionData.createTime}}</el-tag>
+                <el-tag style="float: left;">{{commentData.createTime}}</el-tag>
                 <el-button @click="handlePostDetail" class="news-detail" style="float: right;" type="text">查看来源
                 </el-button>
             </div>
@@ -21,7 +21,7 @@
             <span>是否确认取消该收藏</span>
             <span class="dialog-footer" slot="footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button @click="deleteCollection" type="primary">确 定</el-button>
+            <el-button @click="deleteComment" type="primary">确 定</el-button>
   </span>
         </el-dialog>
 
@@ -32,7 +32,7 @@
 <script>
     export default {
         name: 'news',
-        props: ['collectionData', 'collectionType'],
+        props: ['commentData', 'commentType'],
         data() {
             return {
                 dialogVisible: false,
@@ -40,61 +40,61 @@
             }
         },
         created() {
-            switch (this.collectionType) {
+            switch (this.commentType) {
                 case "1":
-                    this.title = this.collectionData.newsTitle;
+                    this.title = this.commentData.newsTitle;
                     break;
                 case "2":
-                    this.title = this.collectionData.postTitle;
+                    this.title = this.commentData.postTitle;
                     break;
                 case "3":
-                    this.title = this.collectionData.blogTitle;
+                    this.title = this.commentData.blogTitle;
                     break;
             }
         },
         methods: {
             handleDetail() {
-                switch (this.collectionType) {
+                switch (this.commentType) {
                     case "1":
-                        this.$router.push({name: 'newsDetail', query: {'newsId': this.collectionData.newsId}})
+                        this.$router.push({name: 'newsDetail', query: {'newsId': this.commentData.newsId}})
                         break;
                     case "2":
-                        this.$router.push({name: 'postDetail', query: {'postId': this.collectionData.postId}})
+                        this.$router.push({name: 'postDetail', query: {'postId': this.commentData.postId}})
                         break;
                     case "3":
-                        this.$router.push({name: 'blogDetail', query: {'blogId': this.collectionData.blogId}})
+                        this.$router.push({name: 'blogDetail', query: {'blogId': this.commentData.blogId}})
                         break;
                 }
-            }, deleteCollection() {
+            }, deleteComment() {
                 let params = {
-                    id: this.collectionData.collectionId
+                    id: this.commentData.commentId
                 };
-                switch (this.collectionType) {
+                switch (this.commentType) {
                     case "1":
-                        this.axiosProxy.deleteNewsCollection(params).then(response => {
+                        this.axiosProxy.deleteNewsComment(params).then(response => {
                             if (response.data) {
                                 this.$message('取消成功');
-                                this.isCollection = false;
+                                this.isComment = false;
                             } else {
                                 this.$message('取消失败');
                             }
                         });
                         break;
                     case "2":
-                        this.axiosProxy.deletePostCollection(params).then(response => {
+                        this.axiosProxy.deletePostComment(params).then(response => {
                             if (response.data) {
                                 this.$message('取消成功');
-                                this.isCollection = false;
+                                this.isComment = false;
                             } else {
                                 this.$message('取消失败');
                             }
                         });
                         break;
                     case "3":
-                        this.axiosProxy.deleteBlogCollection(params).then(response => {
+                        this.axiosProxy.deleteBlogComment(params).then(response => {
                             if (response.data) {
                                 this.$message('取消成功');
-                                this.isCollection = false;
+                                this.isComment = false;
                             } else {
                                 this.$message('取消失败');
                             }
@@ -105,7 +105,7 @@
                         break;
                 }
                 this.dialogVisible = false;
-                this.$bus.emit('deleteCollection', this.collectionType);
+                this.$bus.emit('deleteComment', this.commentType);
             }
         }
     }
