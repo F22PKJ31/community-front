@@ -8,7 +8,8 @@
                         <el-button v-if="isOwner" @click="dialogVisible = true" style="float: right" type="warning">
                             取消收藏
                         </el-button>
-                        <a class="author" v-bind:href="'#/minePage?userId='+collectionData.userId">{{ collectionData.userName }}</a>
+                        <a class="author" v-bind:href="'/#/minePage?userId='+collectionData.userId">{{
+                            collectionData.userName }}</a>
                     </div>
                 </div>
             </div>

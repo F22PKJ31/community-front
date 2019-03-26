@@ -10,7 +10,7 @@
 			<el-button style="margin: 10px 0;float: right" type="danger" v-if="!this.userId">登陆后收藏</el-button>
 			<h2>{{news.title}}</h2>
 			<div style="text-align: right">
-				<a class="author" v-bind:href="news.userId">{{ news.userName }}</a>
+				<a class="author" v-bind:href="'/#/minePage?userId='+news.userId">{{ news.userName }}</a>
 				发表于
 				{{news.createTime}}
 			</div>

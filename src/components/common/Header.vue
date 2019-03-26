@@ -8,6 +8,7 @@
             <el-menu-item index="2" @click="$router.push({path: '/newsPage'})">新闻推荐</el-menu-item>
             <el-menu-item index="3" @click="$router.push({path: '/blogPage'})">博客中心</el-menu-item>
             <el-menu-item index="4" @click="$router.push({path: '/postPage'})">社区中心</el-menu-item>
+            <el-menu-item @click="$router.push({path: '/userPage'})" index="5">博主园</el-menu-item>
             <el-submenu index="5" style="float: right;" v-if="isLogin">
                 <template slot="title">{{userName}}</template>
                 <el-menu-item index="5-1" @click="handleMinePage">个人中心</el-menu-item><br>

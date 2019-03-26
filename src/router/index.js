@@ -21,6 +21,11 @@ export default new Router({
                 component: resolve => require(['../components/page/NewsPage.vue'], resolve),
                 meta: {title: '新闻推荐'},
             }, {
+                name: 'userPage',
+                path: '/userPage',
+                component: resolve => require(['../components/page/UserPage.vue'], resolve),
+                meta: {title: '博主园'},
+            }, {
                 name: 'newsDetail',
                 path: '/newsDetail',
                 component: resolve => require(['../components/page/NewsDetailPage.vue'], resolve),

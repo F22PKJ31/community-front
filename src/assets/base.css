@@ -9,3 +9,8 @@ pre {
 a{
     text-decoration: none;
 }
+
+.head-img {
+    width: 200px;
+    height: 200px;
+}

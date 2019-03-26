@@ -4,7 +4,7 @@
             <div class="container">
                 <div class="news-prview">
                     <a @click="handlePostDetail" class="news-title">{{ newsData.title }}</a><br>
-                    <a class="author" v-bind:href="'#/minePage?userId='+newsData.userId">{{ newsData.userName }}</a>
+                    <a class="author" v-bind:href="'/#/minePage?userId='+newsData.userId">{{ newsData.userName }}</a>
                     <el-badge :max="999" :value="newsData.readCount" class="replies-num">
                         <el-button type="info">评论数</el-button>
                     </el-badge>

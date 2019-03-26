@@ -4,7 +4,8 @@
             <div class="container">
                 <div class="blog-prview">
                     <a @click="handleBlogDetail" class="blog-title">{{ blogData.title }}</a><br>
-                    <a class="author" v-if="!flag" v-bind:href="'#/minePage?userId='+blogData.userId">{{ blogData.userName }}</a>
+                    <a class="author" v-bind:href="'/#/minePage?userId='+blogData.userId" v-if="!flag">{{
+                        blogData.userName }}</a>
                     <el-badge v-if="!isOwner" :max="999" :value="blogData.readCount" class="replies-num">
                         <el-button>评论</el-button>
                     </el-badge>
@@ -41,6 +42,9 @@
             }
         },
         created() {
+            this.isOwner = localStorage.getItem('userId') == this.blogData.userId;
+        },
+        updated: function () {
             this.isOwner = localStorage.getItem('userId') == this.blogData.userId;
         },
         methods: {

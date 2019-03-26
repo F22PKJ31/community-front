@@ -50,9 +50,8 @@
         },
         methods: {
             create(){
-                this.isOwner = localStorage.getItem('userId') == this.user.userId;
-                console.log(this.isOwner)
                 this.getBlogList();
+                this.isOwner = localStorage.getItem('userId') == this.user.userId;
                 this.$bus.on('deleteBlog', (e) => {
                         this.getBlogList();
                     }
