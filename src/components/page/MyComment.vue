@@ -9,16 +9,16 @@
         </el-header>
         <el-main>
             <div v-if="activeName==='first'">
-                <v-comment :commentData="comment" commentType="1"
-                              v-for="comment in newsComment"></v-comment>
+                <v-comment-two :commentData="comment" commentType="1"
+                              v-for="comment in newsComment"></v-comment-two>
             </div>
             <div v-else-if="activeName==='second'">
-                <v-comment :commentData="comment" commentType="2"
-                              v-for="comment in postComment"></v-comment>
+                <v-comment-two :commentData="comment" commentType="2"
+                              v-for="comment in postComment"></v-comment-two>
             </div>
             <div v-else>
-                <v-comment :commentData="comment" commentType="3"
-                              v-for="comment in blogComment"></v-comment>
+                <v-comment-two :commentData="comment" commentType="3"
+                              v-for="comment in blogComment"></v-comment-two>
             </div>
         </el-main>
 
@@ -34,11 +34,11 @@
 </template>
 
 <script>
-    import vComment from '../common/Comment.vue'
+    import vCommentTwo from '../common/CommentTwo.vue'
 
     export default {
         components: {
-            vComment
+            vCommentTwo
         },
         props:['user'],
         data() {
@@ -56,24 +56,27 @@
             }
         },
         created() {
-            this.getNewsCommentList();
-            this.getBlogCommentList();
-            this.getPostCommentList();
-            this.$bus.on('deleteComment', (e) => {
-                switch (e) {
-                    case "1":
-                        this.getNewsCommentList();
-                        break;
-                    case "2":
-                        this.getPostCommentList();
-                        break;
-                    case "3":
-                        this.getBlogCommentList();
-                        break;
-                }
-            })
+            this.create();
         },
         methods: {
+            create(){
+                this.getNewsCommentList();
+                this.getBlogCommentList();
+                this.getPostCommentList();
+                this.$bus.on('deleteComment', (e) => {
+                    switch (e) {
+                        case "1":
+                            this.getNewsCommentList();
+                            break;
+                        case "2":
+                            this.getPostCommentList();
+                            break;
+                        case "3":
+                            this.getBlogCommentList();
+                            break;
+                    }
+                })
+            },
             handleCurrentChange(val) {
                 this.current = val;
             },

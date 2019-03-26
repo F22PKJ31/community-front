@@ -1,32 +1,26 @@
 <template>
-    <el-container>
-        <el-card class="news" shadow="hover">
-            <div class="clearfix" slot="header">
-                <div class="container">
-                    <div class="news-prview">
-                        <a @click="handleDetail" class="news-title">{{ title }}</a>
-                        <el-button @click="dialogVisible = true" style="float: right" type="warning">取消收藏</el-button>
-                        <a class="author" v-bind:href="commentData.userId">{{ commentData.userName }}</a>
-                    </div>
+    <div>
+        <el-card :body-style="{ padding: '0px'}">
+            <div style="padding: 14px;">
+                <span>{{commentData.content}}</span>
+                <div class="bottom clearfix" style="">
+                    <time class="time">发表于{{commentData.createTime}}</time>
+                    <el-button v-if="isOwner" type="danger" class="button" size="small" style="float: right"
+                               @click="dialogVisible=true">删除评论
+                    </el-button>
                 </div>
             </div>
-            <div class="content clearfix">
-                <el-tag style="float: left;">{{commentData.createTime}}</el-tag>
-                <el-button @click="handlePostDetail" class="news-detail" style="float: right;" type="text">查看来源
-                </el-button>
-            </div>
         </el-card>
-        <el-dialog :visible.sync="dialogVisible" title="确认取消"
+        <el-dialog :visible.sync="dialogVisible" title="确认删除"
                    width="30%">
-            <span>是否确认取消该收藏</span>
+            <span>是否确认删除该评论</span>
             <span class="dialog-footer" slot="footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button @click="deleteComment" type="primary">确 定</el-button>
   </span>
         </el-dialog>
+    </div>
 
-
-    </el-container>
 </template>
 
 <script>
@@ -36,10 +30,12 @@
         data() {
             return {
                 dialogVisible: false,
-                title: ''
+                title: '',
+                isOwner: false
             }
         },
         created() {
+            this.isOwner = localStorage.getItem('userId') == this.commentData.userId;
             switch (this.commentType) {
                 case "1":
                     this.title = this.commentData.newsTitle;
@@ -69,43 +65,46 @@
                 let params = {
                     id: this.commentData.commentId
                 };
+                console.log(params);
                 switch (this.commentType) {
                     case "1":
                         this.axiosProxy.deleteNewsComment(params).then(response => {
                             if (response.data) {
-                                this.$message('取消成功');
+                                this.$message('删除成功');
                                 this.isComment = false;
+                                this.$bus.emit('deleteComment', this.commentType);
                             } else {
-                                this.$message('取消失败');
+                                this.$message('删除失败');
                             }
                         });
                         break;
                     case "2":
                         this.axiosProxy.deletePostComment(params).then(response => {
                             if (response.data) {
-                                this.$message('取消成功');
+                                this.$message('删除成功');
                                 this.isComment = false;
+                                this.$bus.emit('deleteComment', this.commentType);
                             } else {
-                                this.$message('取消失败');
+                                this.$message('删除失败');
                             }
                         });
                         break;
                     case "3":
                         this.axiosProxy.deleteBlogComment(params).then(response => {
                             if (response.data) {
-                                this.$message('取消成功');
+                                this.$message('删除成功');
                                 this.isComment = false;
+                                this.$bus.emit('deleteComment', this.commentType);
                             } else {
-                                this.$message('取消失败');
+                                this.$message('删除失败');
                             }
                         });
                         break;
                     default:
-                        this.$message('取消失败');
+                        this.$message('删除失败');
                         break;
                 }
                 this.dialogVisible = false;
-                this.$bus.emit('deleteComment', this.commentType);
             }
         }
     }
@@ -117,51 +116,13 @@
         text-decoration: none;
     }
 
-    .news {
-        width: 1000px;
-        height: auto;
-        margin: 0 auto 8px;
-    }
-
-    .news-prview {
-        height: 50px;
-        position: relative;
-    }
-
-    .news-title {
-        width: 90%;
-        padding-left: 10px;
-        color: #1a1a1a;
-        font-size: 16px;
-        line-height: 1.6;
-        font-weight: 600;
+    p {
+        margin: 0;
+        width: 100%;
+        word-wrap: break-word;
+        word-break: break-all;
         overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        cursor: pointer;
-        float: left;
-    }
-
-    .author {
-        padding-left: 10px;
-        color: red;
-        float: left;
-    }
-
-    .replies-num {
-        width: 50px;
-        height: 30px;
-        margin-right: 18px;
-        float: right;
-    }
-
-    .news-detail {
-        padding-right: 20px;
-        float: right;
     }
 
 
-    .news .el-card__body {
-        padding: 0;
-    }
 </style>

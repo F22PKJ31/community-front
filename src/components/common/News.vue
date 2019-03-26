@@ -2,15 +2,13 @@
     <el-card class="news" shadow="hover">
         <div class="clearfix" slot="header">
             <div class="container">
-                <a @click="handlePostDetail">
-                    <div class="news-prview">
-                        <a @click="handlePostDetail" class="news-title">{{ newsData.title }}</a><br>
-                        <a class="author" v-bind:href="newsData.userId">{{ newsData.userName }}</a>
-                        <el-badge :max="999" :value="newsData.readCount" class="replies-num">
-                            <el-button type="info">评论数</el-button>
-                        </el-badge>
-                    </div>
-                </a>
+                <div class="news-prview">
+                    <a @click="handlePostDetail" class="news-title">{{ newsData.title }}</a><br>
+                    <a class="author" v-bind:href="'#/minePage?userId='+newsData.userId">{{ newsData.userName }}</a>
+                    <el-badge :max="999" :value="newsData.readCount" class="replies-num">
+                        <el-button type="info">评论数</el-button>
+                    </el-badge>
+                </div>
             </div>
         </div>
         <div class="content clearfix">

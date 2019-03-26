@@ -35,7 +35,7 @@
                                 size="small">
                             查看
                         </el-button>
-                        <el-button
+                        <el-button v-if="isOwner"
                                 @click.native.prevent="handleDelete(scope.$index, post)"
                                 type="danger"
                                 size="small">
@@ -70,6 +70,7 @@
         components: {
             vPost
         },
+        props:['user'],
         mounted() {
             this.$bus.on('handleCate', (e) => {
                 this.categoryId = e;
@@ -88,13 +89,18 @@
                 total: 0,
                 pages: 0,
                 loading: true,
-                deleteId: ''
+                deleteId: '',
+                isOwner: false
             }
         },
         created() {
-            this.getPostList();
+            this.create()
         },
         methods: {
+            create(){
+                this.isOwner = localStorage.getItem('userId') == this.user.userId;
+                this.getPostList();
+            },
             deletePost() {
                 let param = {
                     id: this.deleteId

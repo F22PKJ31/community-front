@@ -2,16 +2,15 @@
     <el-card class="blog" shadow="hover">
         <div class="clearfix" slot="header">
             <div class="container">
-                <a href="#" @click="handleBlogDetail">
-                    <div class="blog-prview">
-                        <a @click="handleBlogDetail" class="blog-title">{{ blogData.title }}</a><br>
-                        <a class="author" v-bind:href="blogData.userId">{{ blogData.userName }}</a>
-                        <el-badge v-if="!flag" :max="999" :value="blogData.readCount" class="replies-num">
-                            <el-button>评论</el-button>
-                        </el-badge>
-                    </div>
-                </a>
-                <el-button class="delete-button" @click="dialogVisible = true" type="danger" v-if="flag">删除
+                <div class="blog-prview">
+                    <a @click="handleBlogDetail" class="blog-title">{{ blogData.title }}</a><br>
+                    <a class="author" v-if="!flag" v-bind:href="'#/minePage?userId='+blogData.userId">{{ blogData.userName }}</a>
+                    <el-badge v-if="!isOwner" :max="999" :value="blogData.readCount" class="replies-num">
+                        <el-button>评论</el-button>
+                    </el-badge>
+                </div>
+                <el-button class="delete-button" @click="dialogVisible = true" type="danger"
+                           v-if="flag&&isOwner">删除
                 </el-button>
             </div>
         </div>
@@ -37,10 +36,12 @@
         props: ['blogData', 'flag'],
         data() {
             return {
-                dialogVisible: false
+                dialogVisible: false,
+                isOwner: false
             }
         },
         created() {
+            this.isOwner = localStorage.getItem('userId') == this.blogData.userId;
         },
         methods: {
             handleBlogDetail() {

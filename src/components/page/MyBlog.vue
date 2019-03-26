@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header>
-            <div style="text-align: right;margin:0px 120px">
+            <div style="text-align: right;margin:0px 120px" v-if="isOwner">
                 <router-link to="/editBlogPage">
                     <el-button type="primary">撰写博客</el-button>
                 </router-link>
@@ -30,6 +30,7 @@
         components: {
             vBlog
         },
+        props:['user'],
         data() {
             return {
                 flag: true,
@@ -40,17 +41,23 @@
                 current: 0,
                 total: 0,
                 pages: 0,
-                loading: true
+                loading: true,
+                isOwner: false
             }
         },
         created() {
-            this.getBlogList()
-            this.$bus.on('deleteBlog', (e) => {
-                    this.getBlogList();
-                }
-            )
+            this.create()
         },
         methods: {
+            create(){
+                this.isOwner = localStorage.getItem('userId') == this.user.userId;
+                console.log(this.isOwner)
+                this.getBlogList();
+                this.$bus.on('deleteBlog', (e) => {
+                        this.getBlogList();
+                    }
+                )
+            },
             handleCurrentChange(val) {
                 this.current = val;
                 this.getBlogList();
@@ -61,7 +68,7 @@
                     current: this.current,
                     size: this.size,
                     t: {
-                        userId: localStorage.getItem('userId')
+                        userId: this.user.userId
                     }
                 }
                 this.axiosProxy.getBlogList(params).then(response => {

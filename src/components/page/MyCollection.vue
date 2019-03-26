@@ -56,24 +56,27 @@
             }
         },
         created() {
-            this.getNewsCollectionList();
-            this.getBlogCollectionList();
-            this.getPostCollectionList();
-            this.$bus.on('deleteCollection', (e) => {
-                switch (e) {
-                    case "1":
-                        this.getNewsCollectionList();
-                        break;
-                    case "2":
-                        this.getPostCollectionList();
-                        break;
-                    case "3":
-                        this.getBlogCollectionList();
-                        break;
-                }
-            })
+            this.created();
         },
         methods: {
+            create(){
+                this.getNewsCollectionList();
+                this.getBlogCollectionList();
+                this.getPostCollectionList();
+                this.$bus.on('deleteCollection', (e) => {
+                    switch (e) {
+                        case "1":
+                            this.getNewsCollectionList();
+                            break;
+                        case "2":
+                            this.getPostCollectionList();
+                            break;
+                        case "3":
+                            this.getBlogCollectionList();
+                            break;
+                    }
+                })
+            },
             handleCurrentChange(val) {
                 this.current = val;
             },

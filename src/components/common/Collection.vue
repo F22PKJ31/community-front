@@ -5,8 +5,10 @@
                 <div class="container">
                     <div class="news-prview">
                         <a @click="handleDetail" class="news-title">{{ title }}</a>
-                        <el-button @click="dialogVisible = true" style="float: right" type="warning">取消收藏</el-button>
-                        <a class="author" v-bind:href="collectionData.userId">{{ collectionData.userName }}</a>
+                        <el-button v-if="isOwner" @click="dialogVisible = true" style="float: right" type="warning">
+                            取消收藏
+                        </el-button>
+                        <a class="author" v-bind:href="'#/minePage?userId='+collectionData.userId">{{ collectionData.userName }}</a>
                     </div>
                 </div>
             </div>
@@ -36,10 +38,12 @@
         data() {
             return {
                 dialogVisible: false,
-                title: ''
+                title: '',
+                isOwner: false
             }
         },
         created() {
+            this.isOwner = localStorage.getItem('userId') == this.collectionData.userId;
             switch (this.collectionType) {
                 case "1":
                     this.title = this.collectionData.newsTitle;
@@ -75,6 +79,7 @@
                             if (response.data) {
                                 this.$message('取消成功');
                                 this.isCollection = false;
+                                this.$bus.emit('deleteCollection', this.collectionType);
                             } else {
                                 this.$message('取消失败');
                             }
@@ -85,6 +90,7 @@
                             if (response.data) {
                                 this.$message('取消成功');
                                 this.isCollection = false;
+                                this.$bus.emit('deleteCollection', this.collectionType);
                             } else {
                                 this.$message('取消失败');
                             }
@@ -95,6 +101,7 @@
                             if (response.data) {
                                 this.$message('取消成功');
                                 this.isCollection = false;
+                                this.$bus.emit('deleteCollection', this.collectionType);
                             } else {
                                 this.$message('取消失败');
                             }
@@ -105,7 +112,6 @@
                         break;
                 }
                 this.dialogVisible = false;
-                this.$bus.emit('deleteCollection', this.collectionType);
             }
         }
     }

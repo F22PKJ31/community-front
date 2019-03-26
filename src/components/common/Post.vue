@@ -4,7 +4,7 @@
             <div class="container">
                 <div class="post-prview">
                     <a @click="handlePostDetail" class="post-title">{{ postData.title }}</a><br>
-                    <a class="author" v-bind:href="postData.userId">{{ postData.userName }}</a>
+                    <a class="author" v-bind:href="'#/minePage?userId='+postData.userId">{{ postData.userName }}</a>
                     <el-badge :max="999" :value="commentNum" class="replies-num">
                         <el-button>评论</el-button>
                     </el-badge>
