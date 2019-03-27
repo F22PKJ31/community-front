@@ -107,13 +107,8 @@
                 })
             }, getHeadImgList() {
                 this.loading = true;
-                let params = {
-                    current: 1,
-                    size: 3,
-                    t: {}
-                }
-                this.axiosProxy.headImgList(params).then(response => {
-                    this.headImg = response.data.records;
+                this.axiosProxy.headImgList().then(response => {
+                    this.headImg = response.data;
                     this.loading = false;
                 })
             },
