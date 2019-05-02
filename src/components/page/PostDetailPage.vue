@@ -22,20 +22,23 @@
 		<el-main>
 			<div class="content" v-html="post.content"></div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId!=null">
-				<el-input type="textarea" v-model="newComment"></el-input>
+				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
 				<el-button @click="sendPostComment" style="margin: 10px 0" type="primary">评论</el-button>
 			</div>
-			<div style="text-align: right" v-show="userId==null">
+			<div style="margin: 10px 0;text-align: right" v-show="userId==null">
+				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
 				<el-button style="margin: 10px 0" type="danger ">请登录</el-button>
 			</div>
-			<div loading v-loading="loading">
-				<v-comment :comment="comment" v-for="comment in commentList"></v-comment>
-				<el-pagination :current-page="current" :page-size="size" :total="total"
-				               @current-change="handleCurrentChange"
-				               background layout="prev, pager, next"
-				               style="float: right">
-				</el-pagination>
+			<div style="width: 100%;height: 200px;text-align: center;background-color: #FFFFFF"
+			     v-if="commentList==null||commentList.length === 0">
+				<h4 style="line-height: 200px">暂无评论</h4>
 			</div>
+			<v-comment :comment="comment" v-for="comment in commentList"></v-comment>
+			<el-pagination :current-page="current" :page-size="size" :total="total"
+			               @current-change="handleCurrentChange"
+			               background layout="prev, pager, next"
+			               style="float: right">
+			</el-pagination>
 		</el-main>
 	</el-container>
 </template>
@@ -74,7 +77,6 @@
                 this.getPostCommentList();
             },
             getPostCommentList() {
-                console.log(this.post.postId)
                 let params = {
                     current: this.current,
                     size: this.size,

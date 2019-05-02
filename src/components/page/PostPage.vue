@@ -1,20 +1,26 @@
 <template>
 	<el-container>
 		<el-main class="main" v-loading="loading">
-			<div style="width: 90%;margin: 0 auto">
+			<el-container>
+				<el-main>
+					<el-input placeholder="搜索帖子" size="medium" style="width: 30%" v-model="selectPost"></el-input>
+					<el-button @click="search" icon="search" style="margin-left: 50px" type="primary">搜索</el-button>
+				</el-main>
+			</el-container>
+			<div style="margin: 0 auto">
 				<img alt="140x140" class="img-responsive" src="http://47.95.14.18:9080/mvn/img/xuewen.png"
 				     style="width: 100%;"/>
 			</div>
 			<div style="text-align: right;margin:20px 120px">
-				<router-link to="/editPostPage">
+				<router-link to="/editPostPage" v-if="userId">
 					<el-button type="primary">发帖</el-button>
 				</router-link>
 			</div>
-			<el-table
-					:data="post"
-					:default-sort="{prop: 'createTime', order: 'descending'}"
-					@row-click="handlePostDetail"
-					style="width: 90%;margin: 0 auto">
+			<el-table empty-text="什么也没找到"
+			          :data="post"
+			          :default-sort="{prop: 'createTime', order: 'descending'}"
+			          @row-click="handlePostDetail"
+			          style="margin: 0 auto">
 				<el-table-column
 						label="标题"
 						prop="title">
@@ -66,11 +72,13 @@
             return {
                 commentNum: 0,
                 categoryId: '',
+                selectPost: '',
                 post: [],
                 size: 8,
                 current: 0,
                 total: 0,
                 pages: 0,
+                userId: localStorage.getItem("userId"),
                 loading: true
             }
         },
@@ -110,7 +118,22 @@
                         this.post[i].readCount = response.data;
                     })
                 }
-                console.log(this.post)
+            },
+            search() {
+                this.loading = true;
+                let params = {
+                    current: this.current,
+                    size: this.size,
+                    t: {
+                        title: this.selectPost,
+                    }
+                }
+                this.axiosProxy.getPostList(params).then(response => {
+                    this.post = response.data.records;
+                    this.total = response.data.total;
+                    this.pages = response.data.pages
+                    this.loading = false;
+                })
             }
         }
     };

@@ -9,9 +9,11 @@
 					<el-input v-model="params.title"></el-input>
 					<el-input type="hidden" v-model="params.userId"></el-input>
 					<el-input type="hidden" v-model="params.userName"></el-input>
-					<el-select v-model="category" value-key="categoryId">
-						<el-option :key="c.categoryId" :label="c.categoryName" :value="c" v-for="c in categoryList">
+					<el-select v-model="categoryId">
+						<el-option :key="c.categoryId" :label="c.categoryName" :value="c.categoryId"
+						           v-for="c in categoryList">
 						</el-option>
+						<br>
 					</el-select>
 				</el-form-item>
 			</el-form>
@@ -50,7 +52,7 @@
     import 'quill/dist/quill.core.css';
     import 'quill/dist/quill.snow.css';
     import 'quill/dist/quill.bubble.css';
-    import {Quill, quillEditor} from 'vue-quill-editor'
+    import {quillEditor} from 'vue-quill-editor'
     import ElSelectDropdown from "element-ui/packages/select/src/select-dropdown";
 
     export default {
@@ -74,6 +76,7 @@
                 videofile: '',
                 imgfile: '',
                 category: {},
+                categoryId: '',
                 params: {
                     userId: '',
                     userName: '',
@@ -121,9 +124,10 @@
         },
         methods: {
             submit() {
-                this.params.categoryId = this.category.categoryId;
-                this.params.categoryName = this.category.categoryName;
-                console.log(this.params);
+                this.params.categoryId = this.categoryId;
+                this.params.categoryName = this.categoryList.find(function (x) {
+                    return x.categoryId === this.params.categoryId;
+                }, this).categoryName;
                 this.axiosProxy.updateBlog(this.params).then(response => {
                     if (response.data) {
                         this.$message('成功')
@@ -144,6 +148,9 @@
                 var that = this;
                 if (that.imgfile === undefined || that.imgfile == null) {
                     this.$message('请选择图片')
+                }
+                if (!this.beforeUpload(that.imgfile)) {
+                    return;
                 }
                 that.jindu = 0;
                 that.showFloat = true;
@@ -243,8 +250,18 @@
                     this.category.categoryId = this.params.categoryId;
                     this.category.categoryName = this.params.categoryName;
                 })
+            },
+            beforeUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isPNG = file.type === 'image/png';
+
+                if (!isJPG && !isPNG) {
+                    this.$message.error('上传图片只能是 JPG 或 PNG 格式!');
+                }
+                return isJPG || isPNG;
             }
         },
+
 
         computed: {
             editor() {

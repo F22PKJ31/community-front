@@ -2,15 +2,15 @@
 	<el-container style="margin: 30px 60px">
 		<el-header>
 			<el-button @click="editBlog()" style="margin: 10px 0;float: right" type="primary"
-			           v-if="blog.userId==this.userId">编辑
+			           v-if="this.userId&&blog.userId==this.userId">编辑
 			</el-button>
 			<el-button @click="saveCollection()" style="margin: 10px 0;float: right" type="primary"
-			           v-if="blog.userId!=this.userId&&!isCollection">收藏
+			           v-if="this.userId&&blog.userId!=this.userId&&!isCollection">收藏
 			</el-button>
 			<el-button @click="deleteCollection()" style="margin: 10px 0;float: right" type="warning"
-			           v-if="blog.userId!=this.userId&&isCollection">取消收藏
-				<el-button style="margin: 10px 0;float: right" type="danger" v-if="!this.userId">登陆后收藏</el-button>
+			           v-if="this.userId&&blog.userId!=this.userId&&isCollection">取消收藏
 			</el-button>
+			<el-button style="margin: 10px 0;float: right" type="danger" v-if="!this.userId">登陆后收藏</el-button>
 			<h2>{{blog.title}}</h2>
 			<div style="text-align: right">
 				<a class="author" v-bind:href="blog.userId">{{ blog.userName }}</a>
@@ -24,17 +24,20 @@
 				<el-input type="textarea" v-model="newComment"></el-input>
 				<el-button @click="sendBlogComment" style="margin: 10px 0" type="primary">评论</el-button>
 			</div>
-			<div style="text-align: right" v-show="userId==null">
-				<el-button style="margin: 10px 0" type="danger ">请登录</el-button>
+			<div style="margin: 10px 0;text-align: right" v-show="userId==null">
+				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
+				<el-button style="margin: 10px 0" type="danger ">请登录后评论</el-button>
 			</div>
-			<div loading v-loading="loading">
-				<v-comment :comment="comment" v-for="comment in commentList"></v-comment>
-				<el-pagination :current-page="current" :page-size="size" :total="total"
-				               @current-change="handleCurrentChange"
-				               background layout="prev, pager, next"
-				               style="float: right">
-				</el-pagination>
+			<v-comment :comment="comment" v-for="comment in commentList"></v-comment>
+			<div style="width: 100%;height: 200px;text-align: center;background-color: #FFFFFF"
+			     v-if="commentList==null||commentList.length === 0">
+				<h4 style="line-height: 200px">暂无评论</h4>
 			</div>
+			<el-pagination :current-page="current" :page-size="size" :total="total"
+			               @current-change="handleCurrentChange"
+			               background layout="prev, pager, next"
+			               style="float: right">
+			</el-pagination>
 		</el-main>
 	</el-container>
 </template>
@@ -54,7 +57,7 @@
                 total: 0,
                 pages: 0,
                 isCollection: false,
-                commentList: '',
+                commentList: null,
                 newComment: '',
                 blog: {},
                 userId: localStorage.getItem('userId'),
@@ -64,10 +67,8 @@
         created() {
             this.axiosProxy.getBlogById({'id': this.$route.query.blogId}).then(response => {
                 this.blog = response.data;
-                console.log(this.blog.userId)
                 this.getBlogCommentList();
             });
-            console.log(this.userId)
             this.getCollectionByUserId();
         },
         methods: {
@@ -88,6 +89,7 @@
                     this.total = response.data.total;
                     this.pages = response.data.pages;
                     this.loading = false;
+                    console.log(this.commentList)
                 })
             },
             sendBlogComment() {

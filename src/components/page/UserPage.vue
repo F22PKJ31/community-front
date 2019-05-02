@@ -1,5 +1,11 @@
 <template>
 	<el-container>
+		<el-container>
+			<el-main>
+				<el-input placeholder="搜索" size="medium" style="width: 30%" v-model="selectUser"></el-input>
+				<el-button @click="search" icon="search" style="margin-left: 50px" type="primary">搜索</el-button>
+			</el-main>
+		</el-container>
 		<el-main class="main" v-loading="loading">
 			<el-row :gutter="10">
 				<v-user :commentNum="commentNum" :key="userData.id" :userData="userData"
@@ -35,6 +41,7 @@
                 commentNum: 0,
                 categoryId: '',
                 user: [],
+                selectUser: '',
                 size: 12,
                 current: 0,
                 total: 0,
@@ -56,6 +63,22 @@
                     current: this.current,
                     size: this.size,
                     t: {}
+                }
+                this.axiosProxy.getUserList(params).then(response => {
+                    this.user = response.data.records;
+                    this.total = response.data.total;
+                    this.pages = response.data.pages;
+                    this.loading = false;
+                })
+            },
+            search() {
+                this.loading = true;
+                let params = {
+                    current: this.current,
+                    size: this.size,
+                    t: {
+                        userName: this.selectUser
+                    }
                 }
                 this.axiosProxy.getUserList(params).then(response => {
                     this.user = response.data.records;

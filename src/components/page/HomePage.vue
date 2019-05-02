@@ -80,10 +80,10 @@
         components: {vBlog, vPost},
         data() {
             return {
-                news: '',
-                posts: '',
-                blog: '',
-                headImg: ''
+                news: [],
+                posts: [],
+                blog: [],
+                headImg: []
             }
         },
         created() {
@@ -101,7 +101,7 @@
                     size: 3,
                     t: {}
                 }
-                this.axiosProxy.getNewsList(params).then(response => {
+                this.axiosProxy.getNewsListOrderByRead(params).then(response => {
                     this.news = response.data.records;
                     this.loading = false;
                 })

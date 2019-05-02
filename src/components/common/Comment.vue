@@ -1,14 +1,21 @@
 <template>
 	<el-card :body-style="{ padding: '0px'}">
-		<div style="padding: 14px;">
-			<p>{{comment.content}}</p>
-			<div class="bottom clearfix">
-				<a v-bind:href="'/#/minePage?userId='+ comment.userId">
-					<span style="font-size: 14px">{{comment.userName}}</span>
-				</a>
-				<time class="time">发表于{{comment.createTime}}</time>
-			</div>
-		</div>
+		<el-container style="padding: 14px;">
+			<el-aside class="small-img" style="height:80px;" width="80px">
+				<img alt="avatar" class="avatar fl" style="height: 100%;width: 100%" v-bind:src="user.imgUrl"/>
+			</el-aside>
+			<el-container>
+				<el-main>
+					<p>{{comment.content}}</p>
+				</el-main>
+				<el-footer class="clearfix" style="height: 15px">
+					<a v-bind:href="'/#/minePage?userId='+ comment.userId">
+						<span style="font-size: 14px">{{comment.userName}}</span>
+					</a>
+					<time class="time">发表于{{comment.createTime}}</time>
+				</el-footer>
+			</el-container>
+		</el-container>
 	</el-card>
 </template>
 
@@ -16,6 +23,24 @@
     export default {
         name: "comment",
         props: ['comment'],
+        data() {
+            return {
+                user: ''
+            }
+        },
+        created() {
+            this.getUserById();
+        },
+        methods: {
+            getUserById() {
+                const param = {
+                    id: this.comment.userId
+                };
+                this.axiosProxy.getUser(param).then(response => {
+                    this.user = response.data;
+                })
+            }
+        }
     };
 </script>
 

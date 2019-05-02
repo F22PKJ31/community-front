@@ -28,9 +28,7 @@
         methods: {
             getCategoryList() {
                 this.axiosProxy.getCategoryList().then(response => {
-                    console.log(response.data);
                     this.categoryData = response.data;
-                    console.log(this.categoryData)
                 })
             },
             handleClick(tab, event) {

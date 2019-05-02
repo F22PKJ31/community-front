@@ -3,11 +3,14 @@
         <el-card :body-style="{ padding: '0px'}">
             <div style="padding: 14px;">
                 <span>{{commentData.content}}</span>
+    
                 <div class="bottom clearfix" style="">
-                    <time class="time">发表于{{commentData.createTime}}</time>
-                    <el-button v-if="isOwner" type="danger" class="button" size="small" style="float: right"
+                    <el-button class="button" size="small" style="float: right" type="danger" v-if="isOwner"
                                @click="dialogVisible=true">删除评论
                     </el-button>
+                    <el-button @click="toOriginal" size="small" style="float:right; margin: 0 5px" type="primary">查看
+                    </el-button>
+                    <time class="time">发表于{{commentData.createTime}}</time>
                 </div>
             </div>
         </el-card>
@@ -71,7 +74,6 @@
                         this.axiosProxy.deleteNewsComment(params).then(response => {
                             if (response.data) {
                                 this.$message('删除成功');
-                                this.isComment = false;
                                 this.$bus.emit('deleteComment', this.commentType);
                             } else {
                                 this.$message('删除失败');
@@ -82,7 +84,6 @@
                         this.axiosProxy.deletePostComment(params).then(response => {
                             if (response.data) {
                                 this.$message('删除成功');
-                                this.isComment = false;
                                 this.$bus.emit('deleteComment', this.commentType);
                             } else {
                                 this.$message('删除失败');
@@ -93,7 +94,6 @@
                         this.axiosProxy.deleteBlogComment(params).then(response => {
                             if (response.data) {
                                 this.$message('删除成功');
-                                this.isComment = false;
                                 this.$bus.emit('deleteComment', this.commentType);
                             } else {
                                 this.$message('删除失败');
@@ -102,6 +102,22 @@
                         break;
                     default:
                         this.$message('删除失败');
+                        break;
+                }
+                this.dialogVisible = false;
+            }, toOriginal() {
+                switch (this.commentType) {
+                    case "1":
+                        this.$router.push({name: 'newsDetail', query: {'newsId': this.commentData.newsId}})
+                        break;
+                    case "2":
+                        this.$router.push({name: 'postDetail', query: {'postId': this.commentData.postId}})
+                        break;
+                    case "3":
+                        this.$router.push({name: 'blogDetail', query: {'blogId': this.commentData.blogId}})
+                        break;
+                    default:
+                        this.$message('跳转失败');
                         break;
                 }
                 this.dialogVisible = false;

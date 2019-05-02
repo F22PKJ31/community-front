@@ -2,10 +2,10 @@
 	<el-container style="margin: 30px 60px">
 		<el-header>
 			<el-button @click="saveCollection()" style="margin: 10px 0;float: right" type="primary"
-			           v-if="news.userId!==this.userId&&!isCollection">收藏
+			           v-if="this.userId&&news.userId!==this.userId&&!isCollection">收藏
 			</el-button>
 			<el-button @click="deleteCollection()" style="margin: 10px 0;float: right" type="warning"
-			           v-if="news.userId!==this.userId&&isCollection">取消收藏
+			           v-if="this.userId&&news.userId!==this.userId&&isCollection">取消收藏
 			</el-button>
 			<el-button style="margin: 10px 0;float: right" type="danger" v-if="!this.userId">登陆后收藏</el-button>
 			<h2>{{news.title}}</h2>
@@ -18,20 +18,23 @@
 		<el-main>
 			<div class="content" v-html="news.content"></div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId!=null">
-				<el-input type="textarea" v-model="newComment"></el-input>
+				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
 				<el-button @click="sendNewsComment" style="margin: 10px 0" type="primary">评论</el-button>
 			</div>
-			<div style="text-align: right" v-show="userId==null">
-				<el-button style="margin: 10px 0" type="danger ">请登录</el-button>
+			<div style="margin: 10px 0;text-align: right" v-show="userId==null">
+				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
+				<el-button style="margin: 10px 0" type="danger">请登录</el-button>
 			</div>
-			<div loading v-loading="loading">
-				<v-comment :comment="comment" v-for="comment in commentList"></v-comment>
-				<el-pagination :current-page="current" :page-size="size" :total="total"
-				               @current-change="handleCurrentChange"
-				               background layout="prev, pager, next"
-				               style="float: right">
-				</el-pagination>
+			<v-comment :comment="comment" v-for="comment in commentList"></v-comment>
+			<div style="width: 100%;height: 200px;text-align: center;background-color: #FFFFFF"
+			     v-if="commentList==null||commentList.length === 0">
+				<h4 style="line-height: 200px">暂无评论</h4>
 			</div>
+			<el-pagination :current-page="current" :page-size="size" :total="total"
+			               @current-change="handleCurrentChange"
+			               background layout="prev, pager, next"
+			               style="float: right">
+			</el-pagination>
 		</el-main>
 	</el-container>
 </template>

@@ -97,8 +97,7 @@
 							:before-upload="beforeAvatarUpload"
 							:on-success="handleAvatarSuccess"
 							:show-file-list="false"
-							action="http://localhost:8010/file/uploadFile"
-							class="avatar-uploader">
+							action="http://localhost:8010/file/uploadFile">
 						<img :src="userForm.imgUrl" class="head-img avatar" v-if="userForm.imgUrl">
 						<i class="el-icon-plus avatar-uploader-icon" v-else></i>
 					</el-upload>
@@ -333,7 +332,7 @@
                 this.$refs[formName].resetFields();
             },
             handleAvatarSuccess(res, file) {
-                this.userForm.imgUrl = URL.createObjectURL(file.raw);
+                this.userForm.imgUrl = res.url;
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
@@ -342,7 +341,7 @@
                 if (!isJPG && !isPNG) {
                     this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
                 }
-                return isJPG && isPNG;
+                return isJPG || isPNG;
             }
         }
     };
@@ -371,8 +370,19 @@
 		width: 200px;
 	}
 	
-	.el-aside {
-		width: 200px;
+	.avatar-uploader-icon {
+		font-size: 28px;
+		color: #8c939d;
+		width: 178px;
+		height: 178px;
+		line-height: 178px;
+		text-align: center;
+	}
+	
+	.avatar {
+		width: 178px;
+		height: 178px;
+		display: block;
 	}
 
 </style>

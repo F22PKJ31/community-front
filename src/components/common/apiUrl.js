@@ -5,7 +5,8 @@ var userHost = 'http://127.0.0.1:8014';
 var categoryHost = 'http://127.0.0.1:8015';
 
 export default {
-    getBlogList: {url: blogHost + '/blog/blogList'}    //获取博客列表
+    getBlogList: {url: blogHost + '/blog/blogList'} //获取博客列表
+    , getAllBlogList: {url: blogHost + '/blog/allBlogList'}    //获取博客列表
     , getBlogListOrderByRead: {url: blogHost + '/blog/blogListOrderByRead'}    //获取博客列表
     , getBlogCollectionList: {url: blogHost + '/blog/collectionListByUserId'}        //获取博客收藏列表
     , deleteBlogCollection: {url: blogHost + '/blog/deleteCollection'}                       //删除博客收藏
@@ -19,6 +20,7 @@ export default {
     , updateNews: {url: newsHost + '/news/updateNews'}
     , deleteNews: {url: newsHost + '/news/deleteNews'}
     , getNewsList: {url: newsHost + '/news/newsList'}
+    , getNewsListOrderByRead: {url: newsHost + '/news/newsListOrderByRead'}
     , sendNewsComment: {url: newsHost + '/news/sendComment'}//获取角色
     , getNewsCommentList: {url: newsHost + '/news/commentList'}
     , getNewsCollectionList: {url: newsHost + '/news/collectionListByUserId'}        //获取博客收藏列表
@@ -34,6 +36,7 @@ export default {
     , getPostCollectionList: {url: postHost + '/post/collectionListByUserId'}        //获取博客收藏列表
     , deletePostCollection: {url: postHost + '/post/deleteCollection'}
     , getPostList: {url: postHost + '/post/postList'}
+    , getAllPostList: {url: postHost + '/post/allPostList'}
     , getPostListOrderByRead: {url: postHost + '/post/postListOrderByRead'}
     , getPostById: {url: postHost + '/post/postDetail'}
     , getPostCommentList: {url: postHost + '/post/commentList'}

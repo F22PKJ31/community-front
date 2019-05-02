@@ -56,7 +56,7 @@
             }
         },
         created() {
-            this.created();
+            this.create();
         },
         methods: {
             create(){
