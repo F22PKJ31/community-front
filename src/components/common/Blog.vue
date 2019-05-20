@@ -50,10 +50,10 @@
             }
         },
         created() {
-            this.isOwner = localStorage.getItem('userId') == this.blogData.userId;
+            this.isOwner = sessionStorage.getItem('userId') == this.blogData.userId;
         },
         updated: function () {
-            this.isOwner = localStorage.getItem('userId') == this.blogData.userId;
+            this.isOwner = sessionStorage.getItem('userId') == this.blogData.userId;
         },
         methods: {
             handleBlogDetail() {

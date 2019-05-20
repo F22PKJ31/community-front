@@ -15,7 +15,7 @@
 					<tr v-if="isOwner">
 						<td>密码：</td>
 						<td>****************</td>
-						<td><a @click="editPassword = true"
+						<td><a @click="editPassword = true;$refs[passForm].resetFields();"
 						       href="javascript:void(0)">修改密码</a></td>
 					</tr>
 					<tr>
@@ -75,7 +75,7 @@
 		</el-container>
 		<!-- 编辑弹出框 -->
 		<el-dialog :visible.sync="editInfo" title="编辑" width="30%">
-			<el-form :model="userForm" :rules="rules" label-width="100px" ref="form">
+			<el-form :model="userForm" label-width="100px" ref="form">
 				<el-form-item label="用户名" prop="userName">
 					<el-input v-model="userForm.userName"></el-input>
 				</el-form-item>
@@ -111,7 +111,7 @@
 		<el-dialog :visible.sync="editPassword" title="编辑" width="30%">
 			<el-form :model="passForm" :rules="rules2" class="demo-ruleForm" label-width="100px" ref="passForm"
 			         status-icon>
-				<el-form-item label="旧密码" prop="pass">
+				<el-form-item label="旧密码" prop="oldPass">
 					<el-input autocomplete="off" type="password" v-model="passForm.oldPass"></el-input>
 				</el-form-item>
 				<el-form-item label="密码" prop="pass">
@@ -148,8 +148,10 @@
         },
         data() {
             var validatePass = (rule, value, callback) => {
-                if (value === '') {
+                if (!value) {
                     callback(new Error('请输入密码'));
+                } else if (this.passForm.oldPass != this.user.passwd) {
+                    callback(new Error('密码错误'));
                 } else {
                     if (this.passForm.checkPass !== '') {
                         this.$refs.passForm.validateField('checkPass');
@@ -158,29 +160,13 @@
                 }
             };
             var validatePass2 = (rule, value, callback) => {
-                if (value === '') {
+                if (!value) {
                     callback(new Error('请再次输入密码'));
                 } else if (value !== this.passForm.pass) {
                     callback(new Error('两次输入密码不一致!'));
                 } else {
                     callback();
                 }
-            };
-            var checkAge = (rule, value, callback) => {
-                if (!value) {
-                    return callback(new Error('年龄不能为空'));
-                }
-                setTimeout(() => {
-                    if (!Number.isInteger(value)) {
-                        callback(new Error('请输入数字值'));
-                    } else {
-                        if (value < 12) {
-                            callback(new Error('必须年满12岁'));
-                        } else {
-                            callback();
-                        }
-                    }
-                }, 1000);
             };
             return {
                 msg: '主页',
@@ -203,11 +189,6 @@
                     pass: '',
                     checkPass: '',
                     oldPass: ''
-                },
-                rules: {
-                    age: [
-                        {validator: checkAge, trigger: 'blur'}
-                    ]
                 },
                 rules2: {
                     pass: [
@@ -242,7 +223,7 @@
         methods: {
             create() {
                 this.user.userId = this.$route.query.userId;
-                this.isOwner = localStorage.getItem('userId') == this.user.userId;
+                this.isOwner = sessionStorage.getItem('userId') == this.user.userId;
                 if (this.isOwner) {
                     this.owner = '我';
                 } else {
@@ -269,15 +250,15 @@
                 this.axiosProxy.updateUser(this.userForm).then(response => {
                     if (response.data) {
                         this.$message.success(`修改成功`);
-                        this.editInfo = false;
-                        localStorage.setItem('userName', this.userForm.userName)
+                        sessionStorage.setItem('userName', this.userForm.userName)
                         this.$bus.emit('updateUser', null);
                         this.getUserDetail();
                     } else {
                         this.$message.error(`修改失败`);
-                        this.editInfo = false;
                     }
-                })
+                });
+                this.editInfo = false;
+                this.editPassword = false;
             },
             handleMyCollection() {
                 this.showCollection = true;
@@ -322,6 +303,8 @@
                             } else {
                                 this.$message.error('修改失败')
                             }
+                            this.editInfo = false;
+                            this.editPassword = false;
                         })
                     } else {
                         return false;

@@ -5,7 +5,7 @@
 				<img alt="avatar" class="avatar fl" style="height: 100%;width: 100%" v-bind:src="user.imgUrl"/>
 			</el-aside>
 			<el-container>
-				<el-main>
+				<el-main style="padding: 5px 20px">
 					<p>{{comment.content}}</p>
 				</el-main>
 				<el-footer class="clearfix" style="height: 15px">
@@ -39,6 +39,11 @@
                 this.axiosProxy.getUser(param).then(response => {
                     this.user = response.data;
                 })
+            }
+        },
+        watch: {
+            user() {
+                this.getUserById()
             }
         }
     };

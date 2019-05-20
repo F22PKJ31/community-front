@@ -11,14 +11,23 @@
             <div v-if="activeName==='first'">
                 <v-comment-two :commentData="comment" commentType="1"
                               v-for="comment in newsComment"></v-comment-two>
+	            <div style="width: 100%;height: 300px;text-align: center" v-if="newsComment.length === 0">
+		            <h3 style="line-height: 300px;color: red">什么也没找到</h3>
+	            </div>
             </div>
             <div v-else-if="activeName==='second'">
                 <v-comment-two :commentData="comment" commentType="2"
                               v-for="comment in postComment"></v-comment-two>
+	            <div style="width: 100%;height: 300px;text-align: center" v-if="postComment.length === 0">
+		            <h3 style="line-height: 300px;color: red">什么也没找到</h3>
+	            </div>
             </div>
             <div v-else>
                 <v-comment-two :commentData="comment" commentType="3"
                               v-for="comment in blogComment"></v-comment-two>
+	            <div style="width: 100%;height: 300px;text-align: center" v-if="blogComment.length === 0">
+		            <h3 style="line-height: 300px;color: red">什么也没找到</h3>
+	            </div>
             </div>
         </el-main>
 

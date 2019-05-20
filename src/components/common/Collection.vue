@@ -61,7 +61,7 @@
         },
         created() {
             this.getUser();
-            this.isOwner = localStorage.getItem('userId') == this.collectionData.userId;
+            this.isOwner = sessionStorage.getItem('userId') == this.collectionData.userId;
             switch (this.collectionType) {
                 case "1":
                     this.title = this.collectionData.newsTitle;

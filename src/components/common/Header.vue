@@ -101,28 +101,28 @@
                 rules: {
                     userName: [
                         {required: true, message: '请输入姓名', trigger: 'blur'},
-                        {min: 4, max: 15, message: '长度在 15 个字以内', trigger: 'blur'}
+                        {min: 1, max: 15, message: '长度在 15 个字以内', trigger: 'blur'}
                     ],
                     passwd: [
                         {required: true, message: '请输入密码', trigger: 'blur'},
-                        {min: 8, max: 16, message: '长度在 8到16 个字之间', trigger: 'blur'}
+                        {min: 2, max: 16, message: '长度在 2到16 个字之间', trigger: 'blur'}
                     ],
                     passwd2: [
                         {required: true, message: '请输入密码', trigger: 'blur'},
-                        {min: 8, max: 16, message: '长度在 8到16 个字之间', trigger: 'blur'}
+                        {min: 2, max: 16, message: '长度在 2到16 个字之间', trigger: 'blur'}
                     ]
                 },
             };
         },
         created: function () {
-            this.userId = localStorage.getItem("userId");
-            this.userName = localStorage.getItem("userName");
+            this.userId = sessionStorage.getItem("userId");
+            this.userName = sessionStorage.getItem("userName");
             if (this.userId) {
                 this.isLogin = true;
             }
             this.$bus.on('updateUser', (e) => {
-                this.userId = localStorage.getItem("userId");
-                this.userName = localStorage.getItem("userName");
+                this.userId = sessionStorage.getItem("userId");
+                this.userName = sessionStorage.getItem("userName");
             })
         },
         methods: {
@@ -136,8 +136,8 @@
                 this.axiosProxy.getUserByName(queryParams).then(response => {
                     console.log(response);
                     if (response.data.length !== 0) {
-                        localStorage.setItem("userName", response.data.userName);
-                        localStorage.setItem("userId", response.data.userId);
+                        sessionStorage.setItem("userName", response.data.userName);
+                        sessionStorage.setItem("userId", response.data.userId);
                         this.isLogin = true;
                         this.loginVisible = false;
                         this.userId = response.data.userId;
@@ -149,48 +149,40 @@
                 })
             },
             exit() {
-                localStorage.removeItem("userId");
-                localStorage.removeItem("userName");
+                sessionStorage.removeItem("userId");
+                sessionStorage.removeItem("userName");
                 this.isLogin = false;
                 this.userId = '';
                 this.userName = '';
                 location.reload();
             },
             register() {
-                if (this.form.userName.length === 0) {
-                    this.errorVisible = true;
+                if (this.form.userName.length == 0) {
+                    this.errorVisible2 = true;
                     this.title = '请输入用户名'
                     return;
                 }
-                if (this.form.passwd.length === 0) {
-                    this.errorVisible = true;
+                if (this.form.passwd.length == 0) {
+                    this.errorVisible2 = true;
                     this.title = '请输入密码'
                     return
                 }
-                if (this.form.passwd2.length === 0) {
-                    this.errorVisible = true;
+                if (this.form.passwd2.length == 0) {
+                    this.errorVisible2 = true;
                     this.title = '请输入确认密码'
                     return
                 }
-                if (this.form.passwd !== this.form.passwd2) {
-                    this.errorVisible = true;
+                if (this.form.passwd != this.form.passwd2) {
+                    this.errorVisible2 = true;
                     this.title = '两次密码不同'
                     return
                 }
-                let queryParams = {
-                    userName: this.form.userName,
-                    passwd: this.form.passwd,
-                    sex: this.sex,
-                    age: this.age,
-
-                };
-                console.log(queryParams);
                 this.errorVisible2 = false;
-                this.axiosProxy.addUser(queryParams).then(response => {
+                this.axiosProxy.addUser(this.form).then(response => {
                     console.log(response);
                     if (response.data.length !== 0) {
-                        localStorage.setItem("userName", response.data.userName);
-                        localStorage.setItem("userId", response.data.userId);
+                        sessionStorage.setItem("userName", response.data.userName);
+                        sessionStorage.setItem("userId", response.data.userId);
                         this.isLogin = true;
                         this.registerVisible = false;
                         this.userId = response.data.userId;

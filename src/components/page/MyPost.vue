@@ -112,7 +112,7 @@
         },
         methods: {
             create() {
-                this.isOwner = localStorage.getItem('userId') == this.user.userId;
+                this.isOwner = sessionStorage.getItem('userId') == this.user.userId;
                 if (this.isOwner) {
                     this.getAllPostList();
                 } else {

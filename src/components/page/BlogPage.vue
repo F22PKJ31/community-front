@@ -1,6 +1,7 @@
 <template>
 	<el-container>
 		<el-header>
+			<v-category></v-category>
 			<div style="text-align: right;margin:20px 120px">
 				<router-link to="/editBlogPage" v-if="userId">
 					<el-button type="primary">撰写博客</el-button>
@@ -34,10 +35,11 @@
 
 <script>
     import vBlog from '../common/Blog.vue'
+    import vCategory from '../common/Category.vue'
 
     export default {
         components: {
-            vBlog
+            vBlog, vCategory
         },
         mounted() {
             this.$bus.on('handleCate', (e) => {
@@ -52,7 +54,7 @@
                 categoryId: '',
                 selectBlog: '',
                 blog: [],
-                userId: localStorage.getItem('userId'),
+                userId: sessionStorage.getItem('userId'),
                 size: 8,
                 current: 0,
                 total: 0,
@@ -73,7 +75,9 @@
                 let params = {
                     current: this.current,
                     size: this.size,
-                    t: {}
+                    t: {
+                        categoryId: this.categoryId
+                    }
                 }
                 this.axiosProxy.getBlogList(params).then(response => {
                     this.blog = response.data.records;

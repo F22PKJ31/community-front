@@ -21,11 +21,11 @@
 		<el-main>
 			<div class="content" v-html="blog.content"></div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId!=null">
-				<el-input type="textarea" v-model="newComment"></el-input>
+				<el-input placeholder="请输入评论内容，限制100字" type="textarea" v-model="newComment"></el-input>
 				<el-button @click="sendBlogComment" style="margin: 10px 0" type="primary">评论</el-button>
 			</div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId==null">
-				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
+				<el-input disabled maxlength="100" type="textarea" v-model="newComment"></el-input>
 				<el-button style="margin: 10px 0" type="danger ">请登录后评论</el-button>
 			</div>
 			<v-comment :comment="comment" v-for="comment in commentList"></v-comment>
@@ -60,7 +60,7 @@
                 commentList: null,
                 newComment: '',
                 blog: {},
-                userId: localStorage.getItem('userId'),
+                userId: sessionStorage.getItem('userId'),
                 loading: true
             }
         },
@@ -68,8 +68,8 @@
             this.axiosProxy.getBlogById({'id': this.$route.query.blogId}).then(response => {
                 this.blog = response.data;
                 this.getBlogCommentList();
+                this.getCollectionByUserId();
             });
-            this.getCollectionByUserId();
         },
         methods: {
             handleCurrentChange(val) {
@@ -89,7 +89,6 @@
                     this.total = response.data.total;
                     this.pages = response.data.pages;
                     this.loading = false;
-                    console.log(this.commentList)
                 })
             },
             sendBlogComment() {
@@ -99,8 +98,8 @@
                 }
                 let params = {
                     content: this.newComment,
-                    userId: localStorage.getItem("userId"),
-                    userName: localStorage.getItem("userName"),
+                    userId: sessionStorage.getItem("userId"),
+                    userName: sessionStorage.getItem("userName"),
                     blogId: this.blog.blogId,
                     blogTitle: this.blog.title
                 }
@@ -117,8 +116,8 @@
             }, saveCollection() {
 
                 let params = {
-                    userId: localStorage.getItem("userId"),
-                    userName: localStorage.getItem("userName"),
+                    userId: sessionStorage.getItem("userId"),
+                    userName: sessionStorage.getItem("userName"),
                     blogId: this.blog.blogId,
                     blogTitle: this.blog.title
                 }
@@ -135,8 +134,8 @@
 
                 let params = {
                     t: {
-                        userId: localStorage.getItem("userId"),
-                        userName: localStorage.getItem("userName"),
+                        userId: sessionStorage.getItem("userId"),
+                        userName: sessionStorage.getItem("userName"),
                         blogId: this.blog.blogId,
                         blogTitle: this.blog.title
                     }
@@ -167,6 +166,15 @@
                 this.$router.push({name: 'editBlogPage', query: {'blogId': this.blog.blogId}})
             }
 
+        },
+        watch: {
+            '$route'(to, from) {
+                this.axiosProxy.getBlogById({'id': this.$route.query.blogId}).then(response => {
+                    this.blog = response.data;
+                    this.getBlogCommentList();
+                    this.getCollectionByUserId();
+                });
+            }
         }
     };
 </script>

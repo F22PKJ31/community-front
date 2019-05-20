@@ -18,12 +18,12 @@
 		<el-main>
 			<div class="content" v-html="news.content"></div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId!=null">
-				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
+				<el-input maxlength="100" placeholder="请输入评论内容，限制100字" type="textarea" v-model="newComment"></el-input>
 				<el-button @click="sendNewsComment" style="margin: 10px 0" type="primary">评论</el-button>
 			</div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId==null">
-				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
-				<el-button style="margin: 10px 0" type="danger">请登录</el-button>
+				<el-input disabled maxlength="100" type="textarea" v-model="newComment"></el-input>
+				<el-button style="margin: 10px 0" type="danger">请登录后评论</el-button>
 			</div>
 			<v-comment :comment="comment" v-for="comment in commentList"></v-comment>
 			<div style="width: 100%;height: 200px;text-align: center;background-color: #FFFFFF"
@@ -56,7 +56,7 @@
                 newComment: '',
                 isCollection: false,
                 news: '',
-                userId: localStorage.getItem('userId'),
+                userId: sessionStorage.getItem('userId'),
                 loading: true
             }
         },
@@ -64,8 +64,8 @@
             this.axiosProxy.getNewsById({'id': this.$route.query.newsId}).then(response => {
                 this.news = response.data;
                 this.getNewsCommentList();
+                this.getCollectionByUserId();
             });
-            this.getCollectionByUserId();
         },
         methods: {
             handleCurrentChange(val) {
@@ -94,8 +94,8 @@
                 }
                 let params = {
                     content: this.newComment,
-                    userId: localStorage.getItem("userId"),
-                    userName: localStorage.getItem("userName"),
+                    userId: sessionStorage.getItem("userId"),
+                    userName: sessionStorage.getItem("userName"),
                     newsId: this.news.newsId,
                     newsTitle: this.news.title
                 }
@@ -112,8 +112,8 @@
             saveCollection() {
 
                 let params = {
-                    userId: localStorage.getItem("userId"),
-                    userName: localStorage.getItem("userName"),
+                    userId: sessionStorage.getItem("userId"),
+                    userName: sessionStorage.getItem("userName"),
                     newsId: this.news.newsId,
                     newsTitle: this.news.title
                 }
@@ -130,8 +130,8 @@
 
                 let params = {
                     t: {
-                        userId: localStorage.getItem("userId"),
-                        userName: localStorage.getItem("userName"),
+                        userId: sessionStorage.getItem("userId"),
+                        userName: sessionStorage.getItem("userName"),
                         newsId: this.news.newsId,
                         newsTitle: this.news.title
                     }
@@ -158,6 +158,15 @@
                         this.$message('取消失败');
                     }
                 })
+            }
+        },
+        watch: {
+            '$route'(to, from) {
+                this.axiosProxy.getNewsById({'id': this.$route.query.newsId}).then(response => {
+                    this.news = response.data;
+                    this.getNewsCommentList();
+                    this.getCollectionByUserId();
+                });
             }
         }
     };

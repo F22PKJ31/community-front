@@ -22,16 +22,16 @@
 		<el-main>
 			<div class="content" v-html="post.content"></div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId!=null">
-				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
-				<el-button @click="sendPostComment" style="margin: 10px 0" type="primary">评论</el-button>
+				<el-input maxlength="100" placeholder="请输入回复内容，限制100字" type="textarea" v-model="newComment"></el-input>
+				<el-button @click="sendPostComment" style="margin: 10px 0" type="primary">回复</el-button>
 			</div>
 			<div style="margin: 10px 0;text-align: right" v-show="userId==null">
-				<el-input maxlength="100" type="textarea" v-model="newComment"></el-input>
-				<el-button style="margin: 10px 0" type="danger ">请登录</el-button>
+				<el-input disabled maxlength="100" type="textarea" v-model="newComment"></el-input>
+				<el-button style="margin: 10px 0" type="danger">请登录后回复</el-button>
 			</div>
 			<div style="width: 100%;height: 200px;text-align: center;background-color: #FFFFFF"
 			     v-if="commentList==null||commentList.length === 0">
-				<h4 style="line-height: 200px">暂无评论</h4>
+				<h4 style="line-height: 200px">暂无回复</h4>
 			</div>
 			<v-comment :comment="comment" v-for="comment in commentList"></v-comment>
 			<el-pagination :current-page="current" :page-size="size" :total="total"
@@ -60,7 +60,7 @@
                 isCollection: false,
                 newComment: '',
                 post: '',
-                userId: localStorage.getItem('userId'),
+                userId: sessionStorage.getItem('userId'),
                 loading: true
             }
         },
@@ -68,8 +68,8 @@
             this.axiosProxy.getPostById({'id': this.$route.query.postId}).then(response => {
                 this.post = response.data;
                 this.getPostCommentList();
+                this.getCollectionByUserId();
             });
-            this.getCollectionByUserId();
         },
         methods: {
             handleCurrentChange(val) {
@@ -99,8 +99,8 @@
                 }
                 let params = {
                     content: this.newComment,
-                    userId: localStorage.getItem("userId"),
-                    userName: localStorage.getItem("userName"),
+                    userId: sessionStorage.getItem("userId"),
+                    userName: sessionStorage.getItem("userName"),
                     postId: this.post.postId,
                     postTitle: this.post.title
                 }
@@ -117,8 +117,8 @@
             saveCollection() {
 
                 let params = {
-                    userId: localStorage.getItem("userId"),
-                    userName: localStorage.getItem("userName"),
+                    userId: sessionStorage.getItem("userId"),
+                    userName: sessionStorage.getItem("userName"),
                     postId: this.post.postId,
                     postTitle: this.post.title
                 }
@@ -135,8 +135,8 @@
 
                 let params = {
                     t: {
-                        userId: localStorage.getItem("userId"),
-                        userName: localStorage.getItem("userName"),
+                        userId: sessionStorage.getItem("userId"),
+                        userName: sessionStorage.getItem("userName"),
                         postId: this.post.postId,
                         postTitle: this.post.title
                     }
@@ -165,6 +165,15 @@
                 })
             }, editPost() {
                 this.$router.push({name: 'editPostPage', query: {'postId': this.post.postId}})
+            }
+        },
+        watch: {
+            '$route'(to, from) {
+                this.axiosProxy.getPostById({'id': this.$route.query.postId}).then(response => {
+                    this.post = response.data;
+                    this.getPostCommentList();
+                    this.getCollectionByUserId();
+                });
             }
         }
     };

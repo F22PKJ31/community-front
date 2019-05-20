@@ -32,12 +32,12 @@
             }
         },
         created() {
-            this.isOwner = localStorage.getItem('userId') == this.userData.userId;
+            this.isOwner = sessionStorage.getItem('userId') == this.userData.userId;
             this.getPostByUserId();
             this.getBlogByUserId();
         },
         updated: function () {
-            this.isOwner = localStorage.getItem('userId') == this.userData.userId;
+            this.isOwner = sessionStorage.getItem('userId') == this.userData.userId;
         },
         methods: {
             handleUserDetail() {
@@ -62,6 +62,13 @@
                 this.axiosProxy.getPostList(param).then(response => {
                     this.postList = response.data.records;
                 })
+            }
+        },
+        watch: {
+            'userData'(to, from) {
+                this.isOwner = sessionStorage.getItem('userId') == this.userData.userId;
+                this.getPostByUserId();
+                this.getBlogByUserId();
             }
         }
     }

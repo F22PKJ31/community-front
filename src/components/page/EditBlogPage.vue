@@ -63,8 +63,8 @@
                 this.params.blogId = this.$route.query.blogId;
                 this.getBlogById();
             }
-            this.params.userId = localStorage.getItem('userId');
-            this.params.userName = localStorage.getItem('userName');
+            this.params.userId = sessionStorage.getItem('userId');
+            this.params.userName = sessionStorage.getItem('userName');
         },
         data() {
             return {
@@ -188,7 +188,6 @@
                             this.$message('插入失败,请重试')
                         }
                     }).catch(function (error) {
-                    this.$message(error);
                     that.showFloat = false;
                     that.upimgShow = false
                 })
@@ -247,8 +246,7 @@
                 };
                 this.axiosProxy.getBlogById(params).then(response => {
                     this.params = response.data;
-                    this.category.categoryId = this.params.categoryId;
-                    this.category.categoryName = this.params.categoryName;
+                    this.categoryId = this.params.categoryId;
                 })
             },
             beforeUpload(file) {

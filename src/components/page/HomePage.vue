@@ -15,11 +15,11 @@
 				<el-col :span="8" v-for="n in news">
 					<div class="thumbnail">
 						<div class="caption">
-							<div @click="handleNewsDetail(n)">
+							<div>
 								<div style="height: 60px;text-align: center">
 									<h5>{{n.title}}</h5>
 								</div>
-								<img :src="n.imgUrl" width="100%">
+								<img :src="n.imgUrl" height="250px" width="100%">
 								<el-badge :max="999" :value="n.readCount" class="replies-num"
 								          style="float: left;margin-top: 20px">
 									<el-button>评论</el-button>

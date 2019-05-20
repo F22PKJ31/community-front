@@ -44,7 +44,7 @@
     import 'quill/dist/quill.core.css';
     import 'quill/dist/quill.snow.css';
     import 'quill/dist/quill.bubble.css';
-    import {Quill, quillEditor} from 'vue-quill-editor'
+    import {quillEditor} from 'vue-quill-editor'
 
     export default {
         name: 'editor',
@@ -53,8 +53,8 @@
                 this.params.postId = this.$route.query.postId;
                 this.getPostById();
             }
-            this.params.userId = localStorage.getItem('userId');
-            this.params.userName = localStorage.getItem('userName');
+            this.params.userId = sessionStorage.getItem('userId');
+            this.params.userName = sessionStorage.getItem('userName');
         },
         data() {
             return {
@@ -158,7 +158,6 @@
                         } else {
                             that.showFloat = false
                             that.upimgShow = false
-                            this.$message('插入失败,请重试')
                         }
                     }).catch(function (error) {
                     this.$message(error)

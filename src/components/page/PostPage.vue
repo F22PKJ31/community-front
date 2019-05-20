@@ -8,7 +8,7 @@
 				</el-main>
 			</el-container>
 			<div style="margin: 0 auto">
-				<img alt="140x140" class="img-responsive" src="http://47.95.14.18:9080/mvn/img/xuewen.png"
+				<img alt="140x140" class="img-responsive" src="http://localhost:8010/xuewen.png"
 				     style="width: 100%;"/>
 			</div>
 			<div style="text-align: right;margin:20px 120px">
@@ -78,7 +78,7 @@
                 current: 0,
                 total: 0,
                 pages: 0,
-                userId: localStorage.getItem("userId"),
+                userId: sessionStorage.getItem("userId"),
                 loading: true
             }
         },

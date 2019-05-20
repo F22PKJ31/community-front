@@ -38,7 +38,7 @@
             }
         },
         created() {
-            this.isOwner = localStorage.getItem('userId') == this.commentData.userId;
+            this.isOwner = sessionStorage.getItem('userId') == this.commentData.userId;
             switch (this.commentType) {
                 case "1":
                     this.title = this.commentData.newsTitle;

@@ -11,14 +11,23 @@
             <div v-if="activeName==='first'">
                 <v-collection :collectionData="collection" collectionType="1"
                               v-for="collection in newsCollection"></v-collection>
+	            <div style="width: 100%;height: 300px;text-align: center" v-if="newsCollection.length === 0">
+		            <h3 style="line-height: 300px;color: red">什么也没找到</h3>
+	            </div>
             </div>
             <div v-else-if="activeName==='second'">
                 <v-collection :collectionData="collection" collectionType="2"
                               v-for="collection in postCollection"></v-collection>
+	            <div style="width: 100%;height: 300px;text-align: center" v-if="postCollection.length === 0">
+		            <h3 style="line-height: 300px;color: red">什么也没找到</h3>
+	            </div>
             </div>
             <div v-else>
                 <v-collection :collectionData="collection" collectionType="3"
                               v-for="collection in blogCollection"></v-collection>
+	            <div style="width: 100%;height: 300px;text-align: center" v-if="blogCollection.length === 0">
+		            <h3 style="line-height: 300px;color: red">什么也没找到</h3>
+	            </div>
             </div>
         </el-main>
 
